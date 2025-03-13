@@ -32,7 +32,6 @@ Seluruh command dimasukkan kedalam 1 file dan gunakan kondisi if else untuk seti
 ### Penyelesaian
 Untuk mengerjakan soal nomor 1, kita harus memiliki data 'reading_data.csv'. Disini saya menggunakan command `curl` untuk mendownload data tersebut.
 ```bash
-# Download file CSV dari Google Drive
 echo "==========Download CSV File 'Catatan Misterius'=========="
 curl -L -o reading_data.csv "https://drive.usercontent.google.com/u/0/uc?id=1l8fsj5LZLwXBlHaqhfJVjz_T0p7EJjqV&export=download"
 ```
@@ -45,7 +44,6 @@ Lalu diikuti dengan URL dari file CSV yang dibungkus dengan tanda `" "` (petik).
 
 Setelah mendownload file tersebut kita baru mengerjakan perintah soal yaitu menghitung banyak buku yang dibaca oleh `Chris Hemsworth` dengan menggunakan command
 ```bash
-# Jumlah buku yang dibaca oleh 'Chris Hemsworth'
 count=$(awk -F',' '$2 == "Chris Hemsworth" {count++} END {print count}' reading_data.csv)
 echo "Chris Hemsworth membaca $count buku."
 ```
@@ -57,7 +55,6 @@ Perintah ini menghitung berapa kali "Chris Hemsworth" muncul di kolom **kedua** 
 ### Penyelesaian
 Kita diminta untuk menghitung rata-rata durasi membaca (Reading_Duration_Minutes) untuk buku-buku yang dibaca menggunakan “Tablet”.
 ```bash
-# Rata-rata durasi membaca dengan 'Tablet' 
 awk -F',' 'NR > 1 && $8 == "Tablet" {
         sum += $6;
         count++;
@@ -78,7 +75,6 @@ Keterangan :
 ### Penyelesaian
 Kita diminta mencari siapa yang memberikan rating tertinggi untuk buku yang dibaca (Rating) beserta nama (Name) dan judul bukunya (Book_Title).
 ```bash
-# Pembaca dengan rating tertinggi
 awk -F, 'NR > 1 && ($7 > ratingMax) {
         ratingMax = $7; nama = $2; buku = $3
         } 
@@ -97,7 +93,6 @@ Keterangan :
 ### Penyelesaian
 Kita diminta menemukan genre yang paling sering dibaca di Asia setelah 31 Desember 2023 beserta jumlahnya.
 ```bash
-# Genre paling populer di Asia setelah 2023  
 awk -F, '$9 == "Asia" && $5 > "2023-12-31" {print $0}' reading_data.csv |       
         awk -F, '{print $4}' | sort | uniq -c |sort -nr |head -n 1 |   
         awk '{print "Genre paling populer di Asia setelah 2023 adalah "$2 " dengan " $1 " buku"}'
@@ -120,7 +115,6 @@ lalu di pipe lagi
 Untuk memenuhi syarat penggunaan kondisi `if else` pada setiap soal, kita dapat membuat pilihan opsi yang memungkinkan pengguna memilih jawaban yang ingin ditampilkan. Dengan menggunakan `if else`, kita dapat memeriksa kondisi tertentu dan menampilkan jawaban yang sesuai berdasarkan pilihan kita.
 
 ```bash
-# Opsi untuk memilih informasi mana yang ingin diketahui
 echo "============================================================="
 echo "|      Masuki Dunia Petualangan Buku Poppo dan Siroyo!      |"
 echo "============================================================="
@@ -135,7 +129,6 @@ echo "| Masukkan opsi (a/b/c/d):                                  |"
 echo "============================================================="
 echo "Jawaban :" 
 
-# Ambil input pertama kali untuk opsi
 read opsi
 ```
 command `read` berfungsi untuk menyimpan input yang dimasukkan ke variabel `opsi`.
@@ -143,41 +136,33 @@ command `read` berfungsi untuk menyimpan input yang dimasukkan ke variabel `opsi
 Lalu saya menggunakan **loop** dan juga kondisi **if else** untuk menampilkan jawaban yang sesuai
 ```bash
 while true; do
-    # Jawaban opsi A
     if [ "$opsi" == "a" ]; then
         # ------command untuk jawaban A------ #
 
-    # Jawaban opsi B
     elif [ "$opsi" == "b" ]; then
         # ------command untuk jawaban B------ #
 
-    # Jawaban opsi C
     elif [ "$opsi" == "c" ]; then
         # ------command untuk jawaban C------ #
 
-    # Jawaban opsi D
     elif [ "$opsi" == "d" ]; then
         # ------command untuk jawaban D------ #
 
     else
-        # Jika pilihan tidak valid
         echo "          Pilihan tidak valid              "
         echo "==========================================="
         echo "Harap pilih a, b, c, atau d."
     fi
 
-    # Tanyakan apakah ingin memilih opsi lain setelah eksekusi
     echo ""
     echo "Apakah Anda ingin memilih opsi lain? (y / n)"
     read pilih_lagi
     
-    # Jika pilihannya "n", keluar dari loop dan selesai
     if [ "$pilih_lagi" == "n" ]; then
         echo "Terima kasih telah menggunakan Analisis Buku. Sampai jumpa!"
         break
     fi
 
-    # Jika pilihannya "y", maka meminta input untuk opsi lagi
     if [ "$pilih_lagi" == "y" ]; then
         echo "Masukkan opsi (a/b/c/d):"
         read opsi
@@ -194,16 +179,177 @@ Keterangan :
     - Jika input `y` = meminta input untuk memilih opsi lagi dengan perintah `echo "Masukkan opsi (a/b/c/d):"` dan membaca input ke dalam variabel `opsi`.
 - Jika memilih untuk melanjutkan (memilih `y` dan memasukkan `opsi a/b/c/d`), program kembali ke awal loop dan meminta input `opsi` baru
 
-# Soal 2
-_**Oleh : ?**_
 
-### Deskripsi Soal
+
+
+
+
+
+
+# Soal 2
+_**Oleh : N**_
+
+## Deskripsi Soal
 Anda merupakan seorang “Observer”, dari banyak dunia yang dibuat dari ingatan yang berbentuk “fragments” - yang berisi kemungkinan yang dapat terjadi di dunia lain. Namun, akhir-akhir ini terdapat anomali-anomali yang seharusnya tidak terjadi, perpindahan “fragments” di berbagai dunia, yang kemungkinan terjadi dikarenakan seorang “Seeker” yang berubah menjadi “Ascendant”, atau dalam kata lain, “God”. Tidak semua “Observer” menjadi “Player”, tetapi disini anda ditugaskan untuk ikut serta dalam menjaga equilibrium dari dunia-dunia yang terbuat dari “Arcaea”.
 
+## Jawaban
+### A. “First Step in a New World”
+> Tugas pertama, dikarenakan kejadian “Axiom of The End” yang semakin mendekat, diperlukan sistem untuk mencatat “Player” aktif agar terpisah dari “Observer”. Buatlah dua shell script, **login.sh** dan **register.sh**, yang dimana database “Player” disimpan di **/data/player.csv** Untuk `register`, parameter yang dipakai yaitu **email, username, dan password**. Untuk `login`, parameter yang dipakai yaitu **email dan password**.
 
 ### Penyelesaian
-#### A. “First Step in a New World”
-> Tugas pertama, dikarenakan kejadian “Axiom of The End” yang semakin mendekat, diperlukan sistem untuk mencatat “Player” aktif agar terpisah dari “Observer”. Buatlah dua shell script, login.sh dan register.sh, yang dimana database “Player” disimpan di /data/player.csv. Untuk register, parameter yang dipakai yaitu email, username, dan password. Untuk login, parameter yang dipakai yaitu email dan password.
+#### Membuat shell script `register.sh`
+```bash
+#!/bin/bash
+
+file_player="data/player.csv"
+
+echo "Enter your email: "
+read -r email
+echo "Enter your username: "
+read -r username
+echo "Enter your password: "
+read -rs pass
+
+echo "$email,$username,$pass" >> "$file_player"
+echo "Registration successful!"
+```
+ssss
+#### Membuat shell script `login.sh`
+```bash
+#!/bin/bash
+
+file_player="data/player.csv"
+
+login() {
+    echo "Enter your email: "
+    read -r email
+
+    if ! grep -q "^$email," "$file_player"; then
+        echo -e "\nEmail not found. Please enter a valid email."
+        return 1
+    else
+        echo "Enter your password: "
+        read -rs pass
+
+        if grep -q "^$email,$pass" "$file_player"; then
+            echo -e "\nLogin successful!\n"
+        else
+            echo -e "\nIncorrect password. Please enter the correct password."
+            return 1
+        fi
+    fi
+}
+
+login
+```
+
+### B. “Radiant Genesis”
+> Sistem login/register untuk para "Player" tentunya memiliki constraint, yaitu validasi email dan password. 
+Email harus memiliki format yang benar dengan tanda @ dan titik, sementara password harus memiliki minimal 8 karakter, setidaknya satu huruf kecil, satu huruf besar, dan satu angka untuk menjaga keamanan data di dunia “Arcaea”.
+```
+Constraint :
+1. Email harus memiliki format yang benar dengan tanda @ dan titik
+2. Password harus memiliki minimal 8 karakter, setidaknya satu huruf kecil, satu huruf besar, dan satu angka
+```
+
+### Penyelesaian
+Pertama saya akan menambahkan command untuk **validasi email** agar sesuai dengan constraint nomor 1
+
+```bash
+while true; do
+    echo "Enter your email: "
+    read -r email
+
+    if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+        echo "Email is valid."
+        break 
+    else
+        echo "Invalid email format. Please make sure the email contains '@' and '.'"
+    fi
+done
+```
+Keterangan :
+-  haha
+- haha
+
+Selanjutnya kita akan menambahkan command untuk **validasi password** agar memenuhi constraint kedua 
+
+```bash
+while true; do
+    echo "Enter your password (min 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number):"
+    read -rs pass
+
+    if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]]; then
+        echo "Password meets all the requirements."
+        break  
+    else
+        echo "Password does not meet the requirements. Please try again."
+    fi
+done
+```
+Keterangan :
+-  haha
+- haha
+
+### C. “Unceasing Spirit”
+> Karena diperlukan pengecekan keaslian “Player” yang aktif, maka diperlukan sistem untuk pencegahan duplikasi “Player”. Jadikan sistem login/register tidak bisa memakai email yang sama (email = unique), tetapi tidak ada pengecekan tambahan untuk username.
+
+### Penyelesaian
+Kita perlu menambahkan command agar sesuai dengan constraint yaitu untuk sistem register tidak bisa memakai email yang sama / unique
+```bash
+while true; do
+    echo "Enter your email: "
+    read -r email
+
+    if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+        if grep -q "^$email," "$file_player"; then
+            echo "This email is already registered. Please use a different email."
+        else
+            echo "Email is valid."
+            break  
+        fi
+    else
+        echo "Invalid email format. Please make sure the email contains '@' and '.'"
+    fi
+done
+```
+Keterangan :
+- asa
+- asa
+
+### D. “The Eternal Realm of Light”
+> Password adalah kunci akses ke dunia Arcaea. Untuk menjaga keamanan "Player", password perlu disimpan dalam bentuk yang tidak mudah diakses. Gunakan algoritma hashing sha256sum yang memakai static salt (bebas).
+
+### Penyelesaian
+```bash
+hashed_pass=$(echo -n "RAMADHAN/$pass/ceriaYH17" | sha256sum | awk '{print $1}')
+```
+Kita menambahkan command tersebut setelah validasi password pada file `register.sh` dan setelah input password pada file `login.sh`. 
+
+Kita juga mengubah data yang ditambahkan ke file CSV yang tadinya `$email,$username,$pass" >> "$file_player` menjadi `$email,$username,$hashed_pass" >> "$file_player` untuk file **register.sh**. Dan yang tadinya `if grep -q "^$email,$pass" "$file_player";` menjadi `if grep -q "^$email,$hashed_pass" "$file_player";` untuk file **login.sh**
+
+Keterangan :
+- sa
+- sa
+
+### E. “The Brutality of Glass”
+> Setelah sukses login, "Player" perlu memiliki akses ke sistem pemantauan sumber daya. Sistem harus dapat melacak penggunaan CPU (dalam persentase) yang menjadi representasi “Core” di dunia “Arcaea”. Pastikan kalian juga bisa melacak “terminal” yang digunakan oleh “Player”, yaitu CPU Model dari device mereka. 
+Lokasi shell script: ./scripts/core_monitor.sh
+
+### Penyelesaian
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Soal 3
 _**Oleh : Muhammad Khairul Yahya**_
