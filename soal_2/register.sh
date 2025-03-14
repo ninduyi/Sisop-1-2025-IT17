@@ -8,13 +8,12 @@ while true; do
 
     if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
         if grep -q "^$email," "$file_player"; then
-            echo "This email is already registered. Please use a different email."
+            echo "This email is already registered. Please use a different email. ❌"
         else
-            echo "Email is valid."
             break  
         fi
     else
-        echo "Invalid email format. Please make sure the email contains '@' and '.'"
+        echo "Invalid email format. Please make sure the email contains '@' and '.'. ❌"
     fi
 done
 
@@ -26,14 +25,14 @@ while true; do
     read -rs pass
 
     if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]]; then
-        echo "Password meets all the requirements."
-        break 
+        break
     else
-        echo "Password does not meet the requirements. Please try again."
+        echo "Password does not meet the requirements. Please try again. ❌"
     fi
 done
 
 hashed_pass=$(echo -n "RAMADHAN/$pass/ceriaYH17" | sha256sum | awk '{print $1}')
 
 echo "$email,$username,$hashed_pass" >> "$file_player"
-echo "Registration successful!"
+echo ""
+echo "Registration successful! 🎉"

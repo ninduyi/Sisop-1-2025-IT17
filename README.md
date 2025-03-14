@@ -179,9 +179,11 @@ Keterangan :
     - Jika input `y` = meminta input untuk memilih opsi lagi dengan perintah `echo "Masukkan opsi (a/b/c/d):"` dan membaca input ke dalam variabel `opsi`.
 - Jika memilih untuk melanjutkan (memilih `y` dan memasukkan `opsi a/b/c/d`), program kembali ke awal loop dan meminta input `opsi` baru
 
+## Kendala
+- Pada soal tipe C saya sempat bingung, jika command `NR > 1` tidak ada maka output nya tidak muncul. Tetapi setelah ditambahkan `NR > 1` output muncul. Hal tersebut karena baris pertama (Nama,Penerbit,Buku,Rating) akan diproses pertama kali. ratingMax diinisialisasi menjadi 0 dan nilai pada kolom ke-7 adalah "Rating", yang merupakan teks, bukan angka. Tanpa `NR > 1`, baris pertama diproses dan perbandingan antara teks dan angka akan menyebabkan hasil yang tidak diinginkan.
 
-
-
+## Dokumentasi
+![Dokumentasi Soal 1](assets/dokumentasi_soal1.PNG)
 
 
 
@@ -211,37 +213,34 @@ echo "Enter your password: "
 read -rs pass
 
 echo "$email,$username,$pass" >> "$file_player"
-echo "Registration successful!"
+echo ""
+echo "Registration successful! 🎉"
 ```
-ssss
+
+Di sini, program hanya meminta input untuk email, username, dan password. Setelah itu, data akan disimpan ke dalam file `data/player.csv` dengan command `echo "$email,$username,$pass" >> "$file_player"`.
+
 #### Membuat shell script `login.sh`
 ```bash
 #!/bin/bash
 
 file_player="data/player.csv"
 
-login() {
+while true; do
     echo "Enter your email: "
     read -r email
+    echo "Enter your password: "
+    read -rs pass
 
-    if ! grep -q "^$email," "$file_player"; then
-        echo -e "\nEmail not found. Please enter a valid email."
-        return 1
+    # Memeriksa apakah email dan password ada di dalam file CSV
+    if grep -q "^$email,$pass" "$file_player"; then
+        echo -e "\nLogin successful! 🎉\n"
+        break  # Keluar dari loop jika login berhasil
     else
-        echo "Enter your password: "
-        read -rs pass
-
-        if grep -q "^$email,$pass" "$file_player"; then
-            echo -e "\nLogin successful!\n"
-        else
-            echo -e "\nIncorrect password. Please enter the correct password."
-            return 1
-        fi
+        echo -e "\n❌ Incorrect email or password. Please try again."
     fi
-}
-
-login
+done
 ```
+Membuat sistem login yang bisa menerima input email dan password, kemudian memeriksa apakah email dan password tersebut cocok dengan data yang ada di file `data/player.csv`
 
 ### B. “Radiant Genesis”
 > Sistem login/register untuk para "Player" tentunya memiliki constraint, yaitu validasi email dan password. 
@@ -253,49 +252,9 @@ Constraint :
 ```
 
 ### Penyelesaian
-Pertama saya akan menambahkan command untuk **validasi email** agar sesuai dengan constraint nomor 1
+Pertama saya akan menambahkan command untuk **validasi email dan password** agar sesuai dengan constraint nomor 1
 
-```bash
-while true; do
-    echo "Enter your email: "
-    read -r email
-
-    if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
-        echo "Email is valid."
-        break 
-    else
-        echo "Invalid email format. Please make sure the email contains '@' and '.'"
-    fi
-done
-```
-Keterangan :
--  haha
-- haha
-
-Selanjutnya kita akan menambahkan command untuk **validasi password** agar memenuhi constraint kedua 
-
-```bash
-while true; do
-    echo "Enter your password (min 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number):"
-    read -rs pass
-
-    if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]]; then
-        echo "Password meets all the requirements."
-        break  
-    else
-        echo "Password does not meet the requirements. Please try again."
-    fi
-done
-```
-Keterangan :
--  haha
-- haha
-
-### C. “Unceasing Spirit”
-> Karena diperlukan pengecekan keaslian “Player” yang aktif, maka diperlukan sistem untuk pencegahan duplikasi “Player”. Jadikan sistem login/register tidak bisa memakai email yang sama (email = unique), tetapi tidak ada pengecekan tambahan untuk username.
-
-### Penyelesaian
-Kita perlu menambahkan command agar sesuai dengan constraint yaitu untuk sistem register tidak bisa memakai email yang sama / unique
+`register.sh`
 ```bash
 while true; do
     echo "Enter your email: "
@@ -303,19 +262,65 @@ while true; do
 
     if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
         if grep -q "^$email," "$file_player"; then
-            echo "This email is already registered. Please use a different email."
+            echo "This email is already registered. Please use a different email. ❌"
         else
-            echo "Email is valid."
             break  
         fi
     else
-        echo "Invalid email format. Please make sure the email contains '@' and '.'"
+        echo "Invalid email format. Please make sure the email contains '@' and '.'. ❌"
+    fi
+done
+
+echo "Enter your username: "
+read -r username
+
+while true; do
+    echo "Enter your password (min 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number):"
+    read -rs pass
+
+    if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]]; then
+        break
+    else
+        echo "Password does not meet the requirements. Please try again. ❌"
     fi
 done
 ```
+
+`login.sh`
+```bash
+# Validasi format email
+    if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+        echo "Email is valid."
+        break 
+    else
+        echo "Invalid email format. Please make sure the email contains '@' and '.'"
+    fi
+
+# Validasi password
+    if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]]; then
+        break
+    else
+        echo "Password does not meet the requirements. Please try again."
+    fi
+```
 Keterangan :
-- asa
-- asa
+- Validasi Email: memastikan email yang dimasukkan memiliki format yang benar (ada @ dan .).
+- Validasi Password: Memastikan password memiliki panjang minimal 8 karakter, mengandung setidaknya satu huruf kecil, satu huruf besar, dan satu angka.
+
+### C. “Unceasing Spirit”
+> Karena diperlukan pengecekan keaslian “Player” yang aktif, maka diperlukan sistem untuk pencegahan duplikasi “Player”. Jadikan sistem login/register tidak bisa memakai email yang sama (email = unique), tetapi tidak ada pengecekan tambahan untuk username.
+
+### Penyelesaian
+Kita perlu menambahkan command agar sesuai dengan constraint yaitu tidak bisa memakai email yang sama / unique
+
+```bash
+if grep -q "^$email," "$file_player"; then
+    echo "This email is already registered. Please use a different email. ❌"
+else
+    break  
+fi
+```
+`grep` untuk memeriksa apakah email yang dimasukkan sudah ada di dalam file `data/player.csv`
 
 ### D. “The Eternal Realm of Light”
 > Password adalah kunci akses ke dunia Arcaea. Untuk menjaga keamanan "Player", password perlu disimpan dalam bentuk yang tidak mudah diakses. Gunakan algoritma hashing sha256sum yang memakai static salt (bebas).
@@ -324,13 +329,8 @@ Keterangan :
 ```bash
 hashed_pass=$(echo -n "RAMADHAN/$pass/ceriaYH17" | sha256sum | awk '{print $1}')
 ```
-Kita menambahkan command tersebut setelah validasi password pada file `register.sh` dan setelah input password pada file `login.sh`. 
+Password yang dimasukkan akan di-hash menggunakan algoritma `sha256sum`. Sebelum itu, password digabungkan dengan **string salt statis** `RAMADHAN/ceriaYH17`
 
-Kita juga mengubah data yang ditambahkan ke file CSV yang tadinya `$email,$username,$pass" >> "$file_player` menjadi `$email,$username,$hashed_pass" >> "$file_player` untuk file **register.sh**. Dan yang tadinya `if grep -q "^$email,$pass" "$file_player";` menjadi `if grep -q "^$email,$hashed_pass" "$file_player";` untuk file **login.sh**
-
-Keterangan :
-- sa
-- sa
 
 ### E. “The Brutality of Glass”
 > Setelah sukses login, "Player" perlu memiliki akses ke sistem pemantauan sumber daya. Sistem harus dapat melacak penggunaan CPU (dalam persentase) yang menjadi representasi “Core” di dunia “Arcaea”. Pastikan kalian juga bisa melacak “terminal” yang digunakan oleh “Player”, yaitu CPU Model dari device mereka. 
