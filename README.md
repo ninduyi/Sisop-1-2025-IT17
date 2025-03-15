@@ -341,12 +341,14 @@ Lokasi shell script: ./scripts/core_monitor.sh
 ```bash
 #!/bin/bash
 
-CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
+CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
 CPU_MODEL=$(lscpu | grep "Model name" | sed 's/Model name: *//')
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] - CPU Usage [$CPU_USAGE%] - CPU Model [$CPU_MODEL]" >> $(pwd)/logs/core.log
 ```
 Keterangan :
+- Command yang ada di dalam `CPU_USAGE` awalnya menampilkan informasi sumber daya, lalu di `grep` yang mengandung kata "Cpu(s)", lalu dari baris tersebut ditampilkan CPU usage yaitu `100 - idle CPU (kolom ke-8)`
+- Pada `CPU_MODEL` command `lscpu`  menampilkan informasi tentang CPU, lalu di `grep` yang mengandung kata "Model name", kemudian menggunakan `sed` untuk menghapus teks Model name: yang ada di depan.
 
 ### F. “In Grief and Great Delight”
 > Selain CPU, “fragments” juga perlu dipantau untuk memastikan equilibrium dunia “Arcaea”. RAM menjadi representasi dari “fragments” di dunia “Arcaea”, yang dimana dipantau dalam persentase usage, dan juga penggunaan RAM sekarang. 
@@ -365,6 +367,12 @@ RAM_USED=$(free -m | grep Mem | awk '{print $3}')
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] - RAM Usage [$RAM_USAGE%] - Used [$RAM_USED MB] - Details [Total: $RAM_TOTAL MB, Available: $RAM_AVAILABLE MB]" >> $(pwd)/logs/fragment.log
 ```
 Keterangan :
+- Command `free` untuk menampilkan statistik memori yg sedang digunakan, `-m` digunakan untuk satuan megabyte (MB).
+- `grep Mem` untuk memilih baris yang mengandung Mem
+- `RAM_USAGE` = used (kolom 3) / total (kolom 2) * 100
+- `RAM_TOTAL` = total (kolom 2)
+- `RAM_AVAILABLE` = available (kolom 7)
+- `RAM_USED` = used (kolom 3)
 
 ### G. “On Fate's Approach”
 > Pemantauan yang teratur dan terjadwal sangat penting untuk mendeteksi anomali. Crontab manager (suatu menu) memungkinkan "Player" untuk mengatur jadwal pemantauan sistem. 
@@ -446,6 +454,37 @@ done
 ```
 Keterangan :
 
+**Opsi 1** = Menambahkan CPU Monitor (core_monitor.sh) ke crontab
+- `if ! crontab -l | grep -q "$current_dir/scripts/core_monitor.sh"; then`
+
+cek apakah ada baris yang mengandung path ke core_monitor.sh di dalam crontab, tetapi tidak dicetak outputnya.
+- `(crontab -l; echo "* * * * * /bin/bash $current_dir/scripts/core_monitor.sh >> $log_dir/core.log 2>&1") | crontab -`
+
+Penjelasan :
+1.  `crontab -l` = Menampilkan daftar cron yang ada.
+2.  `echo "* * * * * /bin/bash $current_dir/scripts/core_monitor.sh >> $log_dir/core.log 2>&1"` = Menambahkan tugas (menjalankan script tiap menit, memastikan dan bisa menyimpan ke core.log, lalu dimasukkan ke daftar cron yg sudah diperbarui) ke crontab
+
+**Opsi 2** = Menambahkan RAM Monitor ke Crontab
+- Sama seperti yang CPU bedanya, ini RAM
+
+**Opsi 3** = Menghapus CPU Monitor dari Crontab
+- `crontab -l | grep -v "$current_dir/scripts/core_monitor.sh" | crontab -
+crontab -l`
+
+Penjelasan :
+1. `crontab -l` = menampilkan daftar tugas
+2. `grep -v "$current_dir/scripts/core_monitor.sh"` =  baris yang mengandung core_monitor.sh akan dihapus
+3. `| crontab -` = Memasukkan kembali daftar cron yang telah diperbarui ke dalam crontab
+
+**Opsi 4** =  Menghapus RAM Monitor dari Crontab
+- Sama seperti yang CPU bedanya, ini RAM
+
+**Opsi 5** = Melihat Semua Cron Job
+- `crontab -l` = Menampilkan daftar cron jobs yang aktif
+
+**Opsi 6** 
+- `exit 0` akan keluar dari skrip dan mengakhiri program
+
 ### H. “The Disfigured Flow of Time”
 > Karena tentunya script yang dimasukkan ke crontab tidak mengeluarkan output di terminal, buatlah 2 log file, core.log dan fragment.log di folder ./log/, yang dimana masing-masing terhubung ke program usage monitoring untuk usage tersebut. 
 
@@ -482,7 +521,7 @@ User flow :
 ```bash
 #!/bin/bash
 
-show_main_menu() {
+while true; do
     clear
     echo "=============================================================="
     echo "               🌟  Welcome to ARCAEA TERMINAL 🌟              "
@@ -493,10 +532,6 @@ show_main_menu() {
     echo "=============================================================="
     echo ""
     read -p "Enter option [1-3]: " opsi_terminal
-}
-
-while true; do
-    show_main_menu
 
     case $opsi_terminal in
         1)
@@ -519,6 +554,19 @@ while true; do
 done
 ```
 Keterangan :
+- `case $opsi_terminal in ... esac` = memeriksa yang dimasukkan oleh pengguna.
+
+Berdasarkan opsi tersebut :
+
+**Opsi 1**
+- `./register.sh` menjalankan script `register.sh`
+- `read -p` = menampilkan pesan dan menunggu input dari pengguna sebelum lanjut ke berikutnya
+
+**Opsi 2**
+- `./login.sh` menjalankan script `login.sh`
+
+**Opsi 3**
+- `exit 0` akan keluar dari skrip dan mengakhiri program
 
 ## Kendala
 - Kendala yang dihadapi adalah setelah berhasil login, tidak langsung diarahkan ke menu crontab, melainkan tetap berada di menu awal. Solusinya adalah dengan menambahkan perintah untuk menjalankan `manager.sh` setelah login berhasil pada file `login.sh`.

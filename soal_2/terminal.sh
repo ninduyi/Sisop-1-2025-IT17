@@ -1,6 +1,6 @@
 #!/bin/bash
 
-show_main_menu() {
+while true; do
     clear
     echo "=============================================================="
     echo "               🌟  Welcome to ARCAEA TERMINAL 🌟              "
@@ -11,10 +11,6 @@ show_main_menu() {
     echo "=============================================================="
     echo ""
     read -p "Enter option [1-3]: " opsi_terminal
-}
-
-while true; do
-    show_main_menu
 
     case $opsi_terminal in
         1)
