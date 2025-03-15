@@ -670,10 +670,21 @@ Pada suatu hari, anda diminta teman anda untuk membantunya mempersiapkan diri un
 
 Untuk menganalisis data tersebut dengan baik, anda berpikiran untuk membuat script yang bernama pokemon_analysis.sh dengan fitur sebagai berikut:
 
+## Penyelesaian
+Pertama - tama kita harus mendownload data base 'pokemon_usage.csv' terlebih dahulu disini saya menggunakan command 'wget'
+
+```
+# Download file CSV dari Google Drive
+wget "https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download" -O POKEMON_USAGE.CSV
+```
+Keterangan :
+- `wget` : Mengunduh file
+- `-O POKEMON_USAGE.CSV` : Menyimpan isi data set di link tersebut ke file bernama POKEMON_USAGE.CSV
+
 ## Jawaban
 
 ### A. Melihat summary dari data
-> Sntuk mengetahui Pokemon apa yang sedang membawa teror kepada lingkungan “Generation 9 OverUsed” anda berusaha untuk membuat sebuah fitur untuk **menampilkan nama Pokemon dengan Usage% dan RawUsage paling tinggi**.
+> Untuk mengetahui Pokemon apa yang sedang membawa teror kepada lingkungan “Generation 9 OverUsed” anda berusaha untuk membuat sebuah fitur untuk **menampilkan nama Pokemon dengan Usage% dan RawUsage paling tinggi**.
 
 Contoh (atur pesan sesuai kreativitas):
 ```bash
@@ -683,6 +694,82 @@ Highest Adjusted Usage:  <namaPokemon> with 31.0927%
 Highest Raw Usage:   	<namaPokemon> with 563831 uses
 ```
 ### Penyelesaian A
+kita diminta untuk membuat sebuah fitur untuk menampilkan nama Pokemon dengan Usage% dan RawUsage paling tinggi 
+
+```bash 
+function summary() {
+        echo "Summary of $FILE"
+        tail -n +2 "$FILE" | sort -t',' -k2,2nr | awk -F',' 'NR==1 {print "Highest Adjusted Usage: "$1","$2}'
+        tail -n +2 "$FILE" | sort -t',' -k3,3nr | awk -F',' 'NR==1 {print "Highest Raw Usage:      "$1","$3}'
+
+        exit 0
+}
+
+```
+Keterangan :
+- `echo` : Menampilkan output ke layar
+- `tail -n +2` : Menghilangkan baris pertama lalu mulai menganalisis dari baris ke 2 jadi HEADR nya tidak ada lagi
+- `sort -t ','` : Mengurutkan isi file
+- `-k2,2nr` : Sortir berdasarkan kolom ke-2 (Usage%) dalam urutan numerik (n) menurun (r)
+- `-k3,3nr ` :  Sortir berdasarkan kolom ke-3 (Raw0Usage) dalam urutan numerik (n) menurun (r)
+- `'NR==1` : Mencetak baris pertama dari hasil sort 
+- `{print "Highest Adjusted Usage: "$1","$2}` : Cetak nama Pokémon `$1` dan Usage% `$2`
+- `{print "Highest Raw Usage:      "$1","$3}` : Cetak nama Pokémon `$1` dan RawUsage% `$3`
+
+### B. Mengurutkan Pokemon berdasarkan data kolom
+> Untuk memastikan bahwa anda mengetahui kondisi lingkungan “Generation 9 OverUsed”, anda berusaha untuk membuat sebuah fitur untuk sort berdasarkan:
+Usage%
+RawUsage
+Nama
+HP
+Atk
+Def
+Sp.Atk
+Sp.Def
+Speed
+Sort dilakukan dengan urutan descending untuk semua angka selain nama, yang diurutkan secara alphabetical. Output harus sesuai dengan format csv yang diberikan.
+
+Contoh (atur pesan sesuai kreativitas):
+```bash
+./pokemon_analysis.sh pokemon_usage.csv --sort usage
+Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
+<namaPokemon>,31.09270%,253499,Ground,Flying,75,95,125,45,75,95
+<namaPokemon>,27.06328%,563831,Ground,Fighting,115,131,131,53,53,87
+<namaPokemon>,22.41954%,224818,Flying,Steel,98,87,105,53,85,67
+<namaPokemon>,21.52833%,192107,Dark,Ground,155,110,125,55,80,45
+<namaPokemon>,21.27718%,412146,Dark,Steel,100,135,120,60,85,50
+... dan seterusnya (195 more lines)
+
+
+```
+### Penyelesaian A
+Kita diminta untuk mengurutkan masing - masing kolom dari kolom pokemon sampai speed 
+
+```bash
+function mengurutkan_data {
+        HEADER=$(head -1 "$FILE")
+        echo "$HEADER"
+        if [ "$OPTION" = "pokemon" ]; then
+            tail -n +2 "$FILE" | sort -t, -k1,1
+        else
+            tail -n +2 "$FILE" | sort -t, -k$(awk -F, -v col="$OPTION" '{for (i=1; i<=NF; i++) if ($i == col) print i}' <<< "$HEADER") -nr
+   fi
+        exit 0
+}
+```
+Keterangan :
+- `HEADER=$(head -1 "$FILE")` : Mengambil baris pertama dari file lalu menyimpan nya ke variabel HEADER
+-  `echo "$HEADER"` : Menampilkan output ke layar berupa HEADER yg tadi sudah disimpan
+-  ` if [ "$OPTION" = "pokemon" ]; then` : Mengecek apakah opsi ($OPTION) yang diberikan adalah "pokemon" lalu jika benar, maka data akan diurutkan di kolom Pokémon (kolom pertama)
+-  `tail -n +2 "$FILE" ` : Mengeksekusi file dari baris ke 2
+-  `sort -t, -k1,1` : Sortir berdasarkan kolom pertama (nama Pokémon) dalam urutan alfabetis
+-  `-k$(awk -F, -v col="$OPTION" '{for (i=1; i<=NF; i++) if ($i == col) print i}' <<< "$HEADER") -nr` : Variabel col diisi dengan nama kolom yang dipilih lalu Looping dari kolom pertama (i=1) hingga terakhir (NF), 
+Jika nama kolom $i cocok dengan $OPTION, cetak nomor kolom tersebut.
+
+
+ 
+
+
 
 
 
