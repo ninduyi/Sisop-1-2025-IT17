@@ -341,10 +341,11 @@ Lokasi shell script: ./scripts/core_monitor.sh
 ```bash
 #!/bin/bash
 
-CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
+CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
 CPU_MODEL=$(lscpu | grep "Model name" | sed 's/Model name: *//')
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] - CPU Usage [$CPU_USAGE%] - CPU Model [$CPU_MODEL]" >> $(pwd)/logs/core.log
+CORE_LOG_PATH="$(dirname "$0")/../logs/core.log"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] - CPU Usage [$CPU_USAGE%] - CPU Model [$CPU_MODEL]" >>"$CORE_LOG_PATH"
 ```
 Keterangan :
 - Command yang ada di dalam `CPU_USAGE` awalnya menampilkan informasi sumber daya, lalu di `grep` yang mengandung kata "Cpu(s)", lalu dari baris tersebut ditampilkan CPU usage yaitu `100 - idle CPU (kolom ke-8)`
@@ -571,7 +572,7 @@ Berdasarkan opsi tersebut :
 ## Kendala
 - Kendala yang dihadapi adalah setelah berhasil login, tidak langsung diarahkan ke menu crontab, melainkan tetap berada di menu awal. Solusinya adalah dengan menambahkan perintah untuk menjalankan `manager.sh` setelah login berhasil pada file `login.sh`.
 - Penulisan path ke folder log yang awalnya diubah pada file `manager.sh`, namun tidak berhasil. Akhirnya, perubahan dapat dilakukan melalui perintah `crontab -e`
-
+- pada `core_monitor.sh` penulisan path menuju `core.log` tidak benar, karena saya menggunakan `pwd` jika di run dari terminal.sh sampai ke tahap crontab menu, maka `pwd` berarti `/home/user`, akhirnya saya menggunakan `dirname "$0"/../logs/core.log` dimana `dirname "$0"` menunjukkan direktori scripts berada.
 
 ## Dokumentasi
 ### `terminal.sh`
