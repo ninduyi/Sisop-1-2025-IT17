@@ -189,7 +189,7 @@ Keterangan :
 
 
 # Soal 2
-_**Oleh : N**_
+_**Oleh : Nabilah Anindya Paramesti**_
 
 ## Deskripsi Soal
 Anda merupakan seorang “Observer”, dari banyak dunia yang dibuat dari ingatan yang berbentuk “fragments” - yang berisi kemungkinan yang dapat terjadi di dunia lain. Namun, akhir-akhir ini terdapat anomali-anomali yang seharusnya tidak terjadi, perpindahan “fragments” di berbagai dunia, yang kemungkinan terjadi dikarenakan seorang “Seeker” yang berubah menjadi “Ascendant”, atau dalam kata lain, “God”. Tidak semua “Observer” menjadi “Player”, tetapi disini anda ditugaskan untuk ikut serta dalam menjaga equilibrium dari dunia-dunia yang terbuat dari “Arcaea”.
@@ -231,20 +231,19 @@ while true; do
     echo "Enter your password: "
     read -rs pass
 
-    # Memeriksa apakah email dan password ada di dalam file CSV
     if grep -q "^$email,$pass" "$file_player"; then
         echo -e "\nLogin successful! 🎉\n"
-        break  # Keluar dari loop jika login berhasil
+        break
     else
         echo -e "\n❌ Incorrect email or password. Please try again."
     fi
 done
 ```
-Membuat sistem login yang bisa menerima input email dan password, kemudian memeriksa apakah email dan password tersebut cocok dengan data yang ada di file `data/player.csv`
+Membuat sistem login yang bisa menerima input email dan password, kemudian **memeriksa apakah email dan password tersebut cocok dengan data** yang ada di file `data/player.csv`
 
 ### B. “Radiant Genesis”
 > Sistem login/register untuk para "Player" tentunya memiliki constraint, yaitu validasi email dan password. 
-Email harus memiliki format yang benar dengan tanda @ dan titik, sementara password harus memiliki minimal 8 karakter, setidaknya satu huruf kecil, satu huruf besar, dan satu angka untuk menjaga keamanan data di dunia “Arcaea”.
+**Email harus memiliki format yang benar dengan tanda @ dan titik**, sementara **password harus memiliki minimal 8 karakter, setidaknya satu huruf kecil, satu huruf besar, dan satu angka** untuk menjaga keamanan data di dunia “Arcaea”.
 ```
 Constraint :
 1. Email harus memiliki format yang benar dengan tanda @ dan titik
@@ -288,7 +287,6 @@ done
 
 `login.sh`
 ```bash
-# Validasi format email
     if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
         echo "Email is valid."
         break 
@@ -296,7 +294,6 @@ done
         echo "Invalid email format. Please make sure the email contains '@' and '.'"
     fi
 
-# Validasi password
     if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]]; then
         break
     else
@@ -304,8 +301,12 @@ done
     fi
 ```
 Keterangan :
-- Validasi Email: memastikan email yang dimasukkan memiliki format yang benar (ada @ dan .).
-- Validasi Password: Memastikan password memiliki panjang minimal 8 karakter, mengandung setidaknya satu huruf kecil, satu huruf besar, dan satu angka.
+- `if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]];` 
+
+Validasi Email: memastikan email yang dimasukkan memiliki format yang benar (ada @ dan .).
+- `if [[ ${#pass} -ge 8 && "$pass" == *[[:lower:]]* && "$pass" == *[[:upper:]]* && "$pass" == *[0-9]* ]];` 
+
+Validasi Password: Memastikan password memiliki panjang minimal 8 karakter, mengandung setidaknya satu huruf kecil, satu huruf besar, dan satu angka.
 
 ### C. “Unceasing Spirit”
 > Karena diperlukan pengecekan keaslian “Player” yang aktif, maka diperlukan sistem untuk pencegahan duplikasi “Player”. Jadikan sistem login/register tidak bisa memakai email yang sama (email = unique), tetapi tidak ada pengecekan tambahan untuk username.
@@ -337,14 +338,254 @@ Password yang dimasukkan akan di-hash menggunakan algoritma `sha256sum`. Sebelum
 Lokasi shell script: ./scripts/core_monitor.sh
 
 ### Penyelesaian
+```bash
+#!/bin/bash
+
+CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
+CPU_MODEL=$(lscpu | grep "Model name" | sed 's/Model name: *//')
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] - CPU Usage [$CPU_USAGE%] - CPU Model [$CPU_MODEL]" >> $(pwd)/logs/core.log
+```
+Keterangan :
+
+### F. “In Grief and Great Delight”
+> Selain CPU, “fragments” juga perlu dipantau untuk memastikan equilibrium dunia “Arcaea”. RAM menjadi representasi dari “fragments” di dunia “Arcaea”, yang dimana dipantau dalam persentase usage, dan juga penggunaan RAM sekarang. 
+
+Lokasi shell script: `./scripts/frag_monitor.sh`
+
+### Penyelesaian
+```bash
+#!/bin/bash
+
+RAM_USAGE=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
+RAM_TOTAL=$(free -m | grep Mem | awk '{print $2}')
+RAM_AVAILABLE=$(free -m | grep Mem | awk '{print $7}')
+RAM_USED=$(free -m | grep Mem | awk '{print $3}')
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] - RAM Usage [$RAM_USAGE%] - Used [$RAM_USED MB] - Details [Total: $RAM_TOTAL MB, Available: $RAM_AVAILABLE MB]" >> $(pwd)/logs/fragment.log
+```
+Keterangan :
+
+### G. “On Fate's Approach”
+> Pemantauan yang teratur dan terjadwal sangat penting untuk mendeteksi anomali. Crontab manager (suatu menu) memungkinkan "Player" untuk mengatur jadwal pemantauan sistem. 
+
+Hal yang harus ada di fungsionalitas menu:
+- Add/Remove CPU [Core] Usage
+- Add/Remove RAM [Fragment] Usage
+- View Active Jobs
+
+Lokasi shell script: `./scripts/manager.sh`
+
+### Penyelesaian
+```bash
+#!/bin/bash
+
+current_dir=$(pwd)
+
+file_player="$current_dir/data/player.csv"
+log_dir="$current_dir/logs"
+
+while true; do
+    clear
+
+    echo "====================================================="
+    echo "                  ARCAEA TERMINAL                    "
+    echo "====================================================="
+    echo " [1] Add CPU - Core Monitor to Crontab 🖥️          "
+    echo " [2] Add RAM - Fragment Monitor to Crontab 💾      "
+    echo " [3] Remove CPU - Core Monitor from Crontab ❌     "
+    echo " [4] Remove RAM - Fragment Monitor from Crontab ❌ "
+    echo " [5] View All Scheduled Monitoring Jobs 📅         "
+    echo " [6] Exit ARCAEA Terminal 🚪                       "
+    echo "====================================================="
+    echo ""
+    read -p "Please select an option [1-6]: " option
+
+    case $option in
+        1)
+            if ! crontab -l | grep -q "$current_dir/scripts/core_monitor.sh"; then
+                (crontab -l; echo "* * * * * /bin/bash $current_dir/scripts/core_monitor.sh >> $log_dir/core.log 2>&1") | crontab -
+                echo "✅ CPU - Core Monitor successfully added to crontab!"
+            else
+                echo "⚠️ CPU - Core Monitor is already present in crontab."
+            fi
+            ;;
+        2)
+            if ! crontab -l | grep -q "$current_dir/scripts/frag_monitor.sh"; then
+                (crontab -l; echo "* * * * * /bin/bash $current_dir/scripts/frag_monitor.sh >> $log_dir/fragment.log 2>&1") | crontab -
+                echo "✅ RAM - Fragment Monitor successfully added to crontab!"
+            else
+                echo "⚠️ RAM - Fragment Monitor is already present in crontab."
+            fi
+            ;;
+        3)
+            crontab -l | grep -v "$current_dir/scripts/core_monitor.sh" | crontab -
+            echo "✅ CPU - Core Monitor successfully removed from crontab!"
+            ;;
+        4)
+            crontab -l | grep -v "$current_dir/scripts/frag_monitor.sh" | crontab -
+            echo "✅ RAM - Fragment Monitor successfully removed from crontab!"
+            ;;
+        5)
+            echo "📋 Current scheduled jobs in crontab:"
+            crontab -l
+            ;;
+        6)
+            echo "🚪 Exiting ARCAEA Terminal. See you next time!"
+            exit 0
+            ;;
+        *)
+            echo "❌ Invalid choice! Please select a valid option [1-6]."
+            ;;
+    esac
+
+    echo ""
+    read -p "Press Enter to continue... ⏳"
+done
+
+```
+Keterangan :
+
+### H. “The Disfigured Flow of Time”
+> Karena tentunya script yang dimasukkan ke crontab tidak mengeluarkan output di terminal, buatlah 2 log file, core.log dan fragment.log di folder ./log/, yang dimana masing-masing terhubung ke program usage monitoring untuk usage tersebut. 
+
+Format log:
+- core.log
+> `[YYYY-MM-DD HH:MM:SS] - Core Usage [$CPU%] - Terminal Model [$CPU_Model]`
+- fragment.log
+> `[YYYY-MM-DD HH:MM:SS] - Fragment Usage [$RAM%] - Fragment Count [$RAM MB] - Details [Total: $TOTAL MB, Available: $AVAILABLE MB]`
+
+### Penyelesaian
+**`core.log`**
+```bash
+if ! crontab -l | grep -q "$current_dir/scripts/core_monitor.sh"; then
+                (crontab -l; echo "* * * * * /bin/bash $current_dir/scripts/core_monitor.sh >> $log_dir/core.log 2>&1") | crontab -
+```
+Pada scripts di `manager.sh` bagian yang itu merupakan perintah agar output dari `core_monitor.sh` akan disimpan di direktori `/logs/core.log`
+**`fragment.log`**
+```bash
+if ! crontab -l | grep -q "$current_dir/scripts/frag_monitor.sh"; then
+                (crontab -l; echo "* * * * * /bin/bash $current_dir/scripts/frag_monitor.sh >> $log_dir/fragment.log 2>&1") | crontab -
+```
+Pada scripts di `manager.sh` bagian yang itu merupakan perintah agar output dari `frag_monitor.sh` akan disimpan di direktori `/logs/fragment.log`
+
+### I. “Irruption of New Color”
+> Sistem harus memiliki antarmuka utama yang menggabungkan semua komponen. Ini akan menjadi titik masuk bagi "Player" untuk mengakses seluruh sistem. Buatlah shell script `terminal.sh`
+User flow :
+- Register
+- Login
+    - Crontab manager (add/rem core & fragment usage)
+    - Exit
+- Exit
+
+### Penyelesaian
+```bash
+#!/bin/bash
+
+show_main_menu() {
+    clear
+    echo "=============================================================="
+    echo "               🌟  Welcome to ARCAEA TERMINAL 🌟              "
+    echo "============================================================== "
+    echo "  [1] Register New Account        📝                          "
+    echo "  [2] Login to Existing Account  🔑                           "
+    echo "  [3] Exit Arcaea Terminal       🚪                           "
+    echo "=============================================================="
+    echo ""
+    read -p "Enter option [1-3]: " opsi_terminal
+}
+
+while true; do
+    show_main_menu
+
+    case $opsi_terminal in
+        1)
+            echo "📝 Registering a New Account..."
+            ./register.sh
+            read -p "✅Registration successful! Press Enter to continue..."
+            ;;
+        2)
+            echo "🔑 Logging into Existing Account..."
+            ./login.sh
+            ;;
+        3)
+            echo "🚪 Exiting Arcaea Terminal. Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "❌ Invalid option. Please choose a valid option [1-3]."
+            ;;
+    esac
+done
+```
+Keterangan :
 
 
+## Dokumentasi
+### `terminal.sh`
+![Terminal Opsi 1](assets/terminalOpsi1.PNG)
 
+Ini merupakan tampilan ketika memilih opsi 1 (Register)
 
+![Terminal Opsi 2](assets/terminalOpsi2.PNG)
 
+Ini merupakan tampilan ketika memilih opsi 2 (Login)
 
+![Terminal Opsi 3](assets/terminalOpsi3.PNG)
 
+Ini merupakan tampilan ketika memilih opsi 3 (Exit)
 
+### `register.sh`
+![Constraint Register](assets/constRegist.PNG)
+
+![Data Register di /data/player.csv](assets/dataRegistinPlayer.PNG)
+
+### `login.sh`
+![Constraint Login](assets/ConstLogin.PNG)
+
+![Login Success -> Crontab Menu](assets/Login-CrontabMenu.PNG)
+
+Ketika login telah berhasil, maka langsung di arahkan ke crontab menu
+
+### `manager.sh`
+![View jobs awal](assets/viewJob1.PNG)
+
+**Monitoring jobs awal** (memilih opsi 5)
+
+![Add CPU](assets/addCPU.PNG)
+
+Memilih opsi 1 yaitu **add CPU**
+
+![Add RAM](assets/addRAM.PNG)
+
+Memilih opsi 2 yaitu **add RAM**
+
+![View jobs awal](assets/viewJob2.PNG)
+
+**Monitoring jobs setelah add CPU dan RAM** (memilih opsi 5)
+
+![Cek crontab -l](assets/crontab-l.PNG)
+
+**Cek dengan `crontab -l`** di terminal
+
+![Remove CPU](assets/removeCPU.PNG)
+
+**Remove CPU** (memilih opsi 3)
+
+![Remove CPU](assets/removeRAM.PNG)
+
+**Remove RAM** (memilih opsi 4)
+
+![View jobs akhir](assets/viewJob3.PNG)
+
+**Monitoring jobs setelah remove CPU dan RAM** (memilih opsi 5)
+
+### `core_monitor.sh`
+Ketika kita memilih opsi `add CPU` maka akan menjalankan `core_monitor.sh` dan outputnya akan disimpan di `core.log`
+![Tampilan core.log](assets/core.log.PNG)
+### `frag_monitor.sh`
+Ketika kita memilih opsi `add RAM` maka akan menjalankan `frag_monitor.sh` dan outputnya akan disimpan di `fragment.log`
+![Tampilan fragment.log](assets/fragmen.log.PNG)
 
 
 
