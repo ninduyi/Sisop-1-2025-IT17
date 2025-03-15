@@ -29,7 +29,7 @@ Seluruh command dimasukkan kedalam 1 file dan gunakan kondisi if else untuk seti
 ### Soal Tipe A
 > Poppo baru saja mulai melihat tablet ajaib dan terpukau dengan kekerenan orang bernama “Chris Hemsworth”. Poppo jadi sangat ingin tahu berapa banyak buku yang dibaca oleh “Chris Hemsworth”. Bantu Poppo menghitung jumlah baris di tablet ajaib yang menunjukkan buku-buku yang dibaca oleh Chris Hemsworth.
 
-### Penyelesaian
+### Penyelesaian A
 Untuk mengerjakan soal nomor 1, kita harus memiliki data 'reading_data.csv'. Disini saya menggunakan command `curl` untuk mendownload data tersebut.
 ```bash
 echo "==========Download CSV File 'Catatan Misterius'=========="
@@ -52,7 +52,7 @@ Perintah ini menghitung berapa kali "Chris Hemsworth" muncul di kolom **kedua** 
 ### Soal Tipe B
 > Setelah menemukan tablet ajaib, Siroyo mulai penasaran dengan kebiasaan membaca yang tersimpan di dalamnya. Ia mulai menggunakan tablet ajaib dan bergumam sambil meneliti, “Aku ingin tahu berapa lama rata-rata mereka membaca dengan benda ini”. Bantu Siroyo untuk menghitung rata-rata durasi membaca (Reading_Duration_Minutes) untuk buku-buku yang dibaca menggunakan “Tablet”
 
-### Penyelesaian
+### Penyelesaian B
 Kita diminta untuk menghitung rata-rata durasi membaca (Reading_Duration_Minutes) untuk buku-buku yang dibaca menggunakan “Tablet”.
 ```bash
 awk -F',' 'NR > 1 && $8 == "Tablet" {
@@ -72,7 +72,7 @@ Keterangan :
 ### Soal Tipe C
 > Sementara Siroyo sibuk menganalisis tablet ajaib, Poppo duduk disampingnya dengan ide cemerlang. “Kalau kita sudah tahu cara mereka membaca, aku ingin memberi hadiah ke temen yang paling suka sama bukunya!”. Ia pun mencari siapa yang memberikan rating tertinggi untuk buku yang dibaca (Rating) beserta nama (Name) dan judul bukunya (Book_Title).
 
-### Penyelesaian
+### Penyelesaian C
 Kita diminta mencari siapa yang memberikan rating tertinggi untuk buku yang dibaca (Rating) beserta nama (Name) dan judul bukunya (Book_Title).
 ```bash
 awk -F, 'NR > 1 && ($7 > ratingMax) {
@@ -90,7 +90,7 @@ Keterangan :
 ### Soal Tipe D
 > Siroyo mengusap keningnya dan berkata, "Petualangan kita belum selesai! Aku harus bikin laporan untuk klub buku besok." Ia ingin membuat laporan yang istimewa dengan tablet ajaib itu, fokus pada teman-teman di Asia. "Aku penasaran genre apa yang paling populer di sana setelah tahun 2023," katanya, membuka reading_data.csv sekali lagi. Bantu Siroyo menganalisis data untuk menemukan genre yang paling sering dibaca di Asia setelah 31 Desember 2023, beserta jumlahnya, agar laporannya jadi yang terbaik di klub.
 
-### Penyelesaian
+### Penyelesaian D
 Kita diminta menemukan genre yang paling sering dibaca di Asia setelah 31 Desember 2023 beserta jumlahnya.
 ```bash
 awk -F, '$9 == "Asia" && $5 > "2023-12-31" {print $0}' reading_data.csv |       
@@ -198,7 +198,7 @@ Anda merupakan seorang “Observer”, dari banyak dunia yang dibuat dari ingata
 ### A. “First Step in a New World”
 > Tugas pertama, dikarenakan kejadian “Axiom of The End” yang semakin mendekat, diperlukan sistem untuk mencatat “Player” aktif agar terpisah dari “Observer”. Buatlah dua shell script, **login.sh** dan **register.sh**, yang dimana database “Player” disimpan di **/data/player.csv** Untuk `register`, parameter yang dipakai yaitu **email, username, dan password**. Untuk `login`, parameter yang dipakai yaitu **email dan password**.
 
-### Penyelesaian
+### Penyelesaian A
 #### Membuat shell script `register.sh`
 ```bash
 #!/bin/bash
@@ -250,7 +250,7 @@ Constraint :
 2. Password harus memiliki minimal 8 karakter, setidaknya satu huruf kecil, satu huruf besar, dan satu angka
 ```
 
-### Penyelesaian
+### Penyelesaian B
 Pertama saya akan menambahkan command untuk **validasi email dan password** agar sesuai dengan constraint nomor 1
 
 `register.sh`
@@ -311,7 +311,7 @@ Validasi Password: Memastikan password memiliki panjang minimal 8 karakter, meng
 ### C. “Unceasing Spirit”
 > Karena diperlukan pengecekan keaslian “Player” yang aktif, maka diperlukan sistem untuk pencegahan duplikasi “Player”. Jadikan sistem login/register tidak bisa memakai email yang sama (email = unique), tetapi tidak ada pengecekan tambahan untuk username.
 
-### Penyelesaian
+### Penyelesaian C
 Kita perlu menambahkan command agar sesuai dengan constraint yaitu tidak bisa memakai email yang sama / unique
 
 ```bash
@@ -326,7 +326,7 @@ fi
 ### D. “The Eternal Realm of Light”
 > Password adalah kunci akses ke dunia Arcaea. Untuk menjaga keamanan "Player", password perlu disimpan dalam bentuk yang tidak mudah diakses. Gunakan algoritma hashing sha256sum yang memakai static salt (bebas).
 
-### Penyelesaian
+### Penyelesaian D
 ```bash
 hashed_pass=$(echo -n "RAMADHAN/$pass/ceriaYH17" | sha256sum | awk '{print $1}')
 ```
@@ -337,7 +337,7 @@ Password yang dimasukkan akan di-hash menggunakan algoritma `sha256sum`. Sebelum
 > Setelah sukses login, "Player" perlu memiliki akses ke sistem pemantauan sumber daya. Sistem harus dapat melacak penggunaan CPU (dalam persentase) yang menjadi representasi “Core” di dunia “Arcaea”. Pastikan kalian juga bisa melacak “terminal” yang digunakan oleh “Player”, yaitu CPU Model dari device mereka. 
 Lokasi shell script: ./scripts/core_monitor.sh
 
-### Penyelesaian
+### Penyelesaian E
 ```bash
 #!/bin/bash
 
@@ -353,7 +353,7 @@ Keterangan :
 
 Lokasi shell script: `./scripts/frag_monitor.sh`
 
-### Penyelesaian
+### Penyelesaian F
 ```bash
 #!/bin/bash
 
@@ -376,7 +376,7 @@ Hal yang harus ada di fungsionalitas menu:
 
 Lokasi shell script: `./scripts/manager.sh`
 
-### Penyelesaian
+### Penyelesaian G
 ```bash
 #!/bin/bash
 
@@ -455,7 +455,7 @@ Format log:
 - fragment.log
 > `[YYYY-MM-DD HH:MM:SS] - Fragment Usage [$RAM%] - Fragment Count [$RAM MB] - Details [Total: $TOTAL MB, Available: $AVAILABLE MB]`
 
-### Penyelesaian
+### Penyelesaian H
 **`core.log`**
 ```bash
 if ! crontab -l | grep -q "$current_dir/scripts/core_monitor.sh"; then
@@ -478,7 +478,7 @@ User flow :
     - Exit
 - Exit
 
-### Penyelesaian
+### Penyelesaian I
 ```bash
 #!/bin/bash
 
@@ -519,6 +519,10 @@ while true; do
 done
 ```
 Keterangan :
+
+## Kendala
+- Kendala yang dihadapi adalah setelah berhasil login, tidak langsung diarahkan ke menu crontab, melainkan tetap berada di menu awal. Solusinya adalah dengan menambahkan perintah untuk menjalankan `manager.sh` setelah login berhasil pada file `login.sh`.
+- Penulisan path ke folder log yang awalnya diubah pada file `manager.sh`, namun tidak berhasil. Akhirnya, perubahan dapat dilakukan melalui perintah `crontab -e`
 
 
 ## Dokumentasi
@@ -595,13 +599,46 @@ Ketika kita memilih opsi `add RAM` maka akan menjalankan `frag_monitor.sh` dan o
 # Soal 3
 _**Oleh : Muhammad Khairul Yahya**_
 
-### Deskripsi Soal
+## Deskripsi Soal
 Untuk merayakan ulang tahun ke 52 album The Dark Side of the Moon, tim PR Pink Floyd mengadakan sebuah lomba dimana peserta diminta untuk membuat sebuah script bertemakan setidaknya 5 dari 10 lagu dalam album tersebut. Sebagai salah satu peserta, kamu memutuskan untuk memilih Speak to Me, On the Run, Time, Money, dan Brain Damage. Saat program ini dijalankan, terminal harus dibersihkan terlebih dahulu agar tidak mengganggu tampilan dari fungsi fungsi yang kamu buat. Program ini dijalankan dengan cara ./dsotm.sh --play=”<Track>” dengan Track sebagai nama nama lagu yang kamu pilih.
 
-### Penyelesaian
+## Jawaban 
 
-### Dokumentasi
+## Kendala
+
+## Dokumentasi
 
 
 # Soal 4
 _**Oleh : Balqis Sani Sabillah**_
+
+## Deskripsi Soal
+Pada suatu hari, anda diminta teman anda untuk membantunya mempersiapkan diri untuk turnamen Pokemon “Generation 9 OverUsed 6v6 Singles” dengan cara membuatkan tim yang cocok untuknya. Tetapi, anda tidak memahami meta yang dimainkan di turnamen tersebut. Untungnya, seorang informan memberikan anda data `pokemon_usage.csv` yang bisa anda download dan analisis. Data tersebut memiliki banyak kolom:
+- Nama Pokemon
+- Usage% yang merupakan persentase Pokemon yang disesuaikan dengan Rank pengguna dan Winrate
+- Raw Usage yang merupakan jumlah mentah Pokemon dalam semua tim yang tercatat
+- Type1 dan Type2 Pokemon
+- Statistic Pokemon: HP,Atk,Def,SpAtk,SpDef,Speed
+
+Untuk menganalisis data tersebut dengan baik, anda berpikiran untuk membuat script yang bernama pokemon_analysis.sh dengan fitur sebagai berikut:
+
+## Jawaban
+
+### A. Melihat summary dari data
+> Sntuk mengetahui Pokemon apa yang sedang membawa teror kepada lingkungan “Generation 9 OverUsed” anda berusaha untuk membuat sebuah fitur untuk **menampilkan nama Pokemon dengan Usage% dan RawUsage paling tinggi**.
+
+Contoh (atur pesan sesuai kreativitas):
+```bash
+./pokemon_analysis.sh pokemon_usage.csv --info
+Summary of pokemon_usage.csv
+Highest Adjusted Usage:  <namaPokemon> with 31.0927%
+Highest Raw Usage:   	<namaPokemon> with 563831 uses
+```
+### Penyelesaian A
+
+
+
+
+## Kendala
+
+## Dokumentasi
