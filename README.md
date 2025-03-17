@@ -1299,6 +1299,10 @@ Ini buktinya guys!!!
 ### Pil Biru:
 ![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003607.png)
 
+### Kalau gk keduanya:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/8816097b113093b7b6da1d52166193c09403d492/assets/Screenshot%202025-03-18%20005518.png)
+> for those who troll
+
 ## Output Brain Damage:
 ![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003624.png)
 
