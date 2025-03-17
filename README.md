@@ -1273,11 +1273,37 @@ Penutup:
 > **SEKIAN TERIMA KASIH....**
 
 ## Dokumentasi
+> rul yapping mulu, hasilnya mana!!??!
+Ini buktinya guys!!!
 
-##Output Speak to Me:
+## Output Default:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003153.png)
+
+## Output Speak to Me:
 ![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/c28539c9acae37ae075c429b2e54571c811ad3c1/assets/Screenshot%20(1022).png)
 
-##
+## Output On the Run:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003511.png)
+
+## Output Time (update per detik):
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003525.png)
+
+## Output Money:
+
+### Menu:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003540.png)
+
+### Pil Merah:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003552.png)
+
+### Pil Biru:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003607.png)
+
+## Output Brain Damage:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003624.png)
+
+## Output Bonus (Eclipse):
+![iamge alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003703.png)
 
 # Soal 4
 _**Oleh : Balqis Sani Sabillah**_
