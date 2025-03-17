@@ -1274,6 +1274,10 @@ Penutup:
 
 ## Dokumentasi
 
+##Output Speak to Me:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/c28539c9acae37ae075c429b2e54571c811ad3c1/assets/Screenshot%20(1022).png)
+
+##
 
 # Soal 4
 _**Oleh : Balqis Sani Sabillah**_
