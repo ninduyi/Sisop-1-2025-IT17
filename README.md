@@ -743,7 +743,7 @@ Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
 
 
 ```
-### Penyelesaian A
+### Penyelesaian B
 Kita diminta untuk mengurutkan masing - masing kolom dari kolom pokemon sampai speed 
 
 ```bash
