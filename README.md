@@ -1534,14 +1534,14 @@ esac
 }
 ``` 
 Keterangan :
-Menjelaskan cara menggunakan script bernama pokemon_analysis.sh.
-Menjelaskan semua opsi perintah yang bisa dipakai user:
+- Menjelaskan cara menggunakan script bernama pokemon_analysis.sh.
+- Menjelaskan semua opsi perintah yang bisa dipakai user:
 
--h / --help: Memanggil fungsi bantuan (tampilan ini sendiri).
--i / --info: Menampilkan Pokémon dengan Usage tertinggi (fungsi summary).
--s / --sort <metode>: Menyortir data (fungsi mengurutkan_data).
--g / --grep <nama>: Mencari Pokémon berdasarkan nama (fungsi cari_pokemon).
--f / --filter <tipe>: Filter Pokémon berdasarkan tipe (fungsi filter_type).
+- -h / --help: Memanggil fungsi bantuan (tampilan ini sendiri).
+- -i / --info: Menampilkan Pokémon dengan Usage tertinggi (fungsi summary).
+- -s / --sort <metode>: Menyortir data (fungsi mengurutkan_data).
+- -g / --grep <nama>: Mencari Pokémon berdasarkan nama (fungsi cari_pokemon).
+- -f / --filter <tipe>: Filter Pokémon berdasarkan tipe (fungsi filter_type).
 
 
 
