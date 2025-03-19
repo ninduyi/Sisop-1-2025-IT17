@@ -1394,7 +1394,7 @@ Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
 
 
 ```
-### Penyelesaian A
+### Penyelesaian B
 Kita diminta untuk mengurutkan masing - masing kolom dari kolom pokemon sampai speed 
 
 ```bash
@@ -1418,8 +1418,130 @@ Keterangan :
 -  `-k$(awk -F, -v col="$OPTION" '{for (i=1; i<=NF; i++) if ($i == col) print i}' <<< "$HEADER") -nr` : Variabel col diisi dengan nama kolom yang dipilih lalu Looping dari kolom pertama (i=1) hingga terakhir (NF), 
 Jika nama kolom $i cocok dengan $OPTION, cetak nomor kolom tersebut.
 
+### C. Mencari nama Pokemon tertentu
+> Setelah mengetahui kondisi lingkungan “Generation 9 OverUsed”, anda ingin mencari tahu statistik penggunaan dari beberapa Pokemon yang mungkin dapat bertanding baik melawan sebagian besar Pokemon yang ada di Top 10 usage. Oleh karena itu, anda membuat fitur search berdasarkan nama Pokemon. Pastikan agar search yang dimasukkan tidak memunculkan hasil yang tidak diinginkan (seperti memunculkan semua Grass type ketika mengetik search “Grass”), dan output harus sesuai dengan format csv yang diberikan dengan sort Usage%.
 
- 
+contoh : 
+```bash
+./pokemon_analysis.sh pokemon_usage.csv --grep rotom
+Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
+Rotom-Wash,1.62637%,71243,Electric,Water,50,65,107,105,107,86
+
+```
+### Penyelesaian C
+``` bash
+function cari_pokemon() {
+
+ [ -z "$OPTION" ] && { echo "Error: Nama Pokémon harus diberikan!"; exit 1; }
+
+    head -1 "$FILE"
+    tail -n +2 "$FILE" | grep -i "$OPTION"
+
+    exit 0
+}
+```
+Keterangan : 
+
+-  `[ -z "$OPTION" ]` : Mengecek apakah option yg diisi kosong apa tidak 
+- ` { echo "Error: Nama Pokémon harus diberikan!"; exit 1; }` : Jika benar maka akan keluar output " Nama Pokémon harus diberikan! "
+- ` head -1 "$FILE" ` : Menampilkan baris pertama dari FILE
+- ` tail -n +2 "$FILE" ` : Menampilkan isi file dari baris kedua
+- ` grep -i "$OPTION" ` : Mencari baris sesuai perintah di OPTION ( -i = agar tidak terpengaruh dengan huruf besar dan kecil )
+
+### D. Mencari Pokemon berdasarkan filter nama type
+> Agar dapat membuat tim yang baik, anda perlu memikirkan kombinasi yang baik dari beberapa Pokemon, hal ini disebut sebagai “core” oleh komunitas Pokemon! Oleh karena itu, anda berpikiran untuk membuat fitur filter berdasarkan Type sebuah Pokemon. Output harus sesuai dengan format csv yang diberikan dengan sort Usage%
+
+contoh 
+``` bash 
+./pokemon_analysis.sh pokemon_usage.csv --filter dark
+Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
+Ting-Lu,21.52833%,192107,Dark,Ground,155,110,125,55,80,45
+Kingambit,21.27718%,412146,Dark,Steel,100,135,120,60,85,50
+Roaring Moon,12.32447%,230323,Dragon,Dark,105,139,71,55,101,119
+Samurott-Hisui,10.89438%,214350,Water,Dark,90,108,80,100,65,85
+Darkrai,10.40132%,170900,Dark,None,70,90,90,135,90,125
+Weavile,7.75603%,79409,Dark,Ice,70,120,65,45,85,125
+... dan seterusnya (20 more lines)
+```
+
+### Penyelesian D 
+``` bash
+function filter_type() {
+    HEADER=$(head -1 "$FILE")
+    echo "$HEADER"
+    tail -n +2 "$FILE" | grep -i "$OPTION" | sort -t, -k2 -nr
+}
+```
+Keterangan : 
+
+- ` HEADER=$(head -1 "$FILE") ` : Mengambil baris pertama dari file lalu menyimpan nya ke variabel HEADER
+- `  echo "$HEADER" ` : Menampilkan output ke layar berupa HEADER yg tadi sudah disimpan
+- `  tail -n +2 "$FILE" ` : Menampilkan isi file dari baris kedua
+- ` grep -i "$OPTION" ` : Mencari baris sesuai perintah di OPTION ( -i = agar tidak terpengaruh dengan huruf besar dan kecil )
+- ` sort -t, -k2 -nr ` : -t pemisah kolom (koma), -k2 mengurutkan kolom ke - 2, -n Urutan numerik (karena angka), -r Urutan terbalik (dari besar ke kecil )
+
+### E. Error handling
+Pastikan program yang anda buat mengecek semua kesalahan pengguna agar dapat memberikan kejelasan kepada pengguna pada setiap kasus.
+
+contoh : 
+``` bash
+./pokemon_analysis.sh pokemon_usage.csv --filter
+Error: no filter option provided
+Use -h or --help for more information
+```
+### Penyelesaian 
+``` bash
+ echo "Error: Perintah '$COMMAND' tidak dikenali!"
+        echo "gunakan -h or --help untuk info lebih lanjut"
+        exit 1
+        ;;
+```
+Keterangan :
+- `  echo "Error: Perintah '$COMMAND' tidak dikenali!" ` : Memberitahu bahwa nilai dari variabel COMMAND tidak tikenali sebagai perintah valid
+- `   echo "gunakan -h or --help untuk info lebih lanjut" ` : Memberikan petunjuk untuk menggunakan -h atau --help untuk info lebih lanjut
+
+### F. Help screen yang menarik
+``` bash
+function bantuan_menu() {
+    echo "-----------------------------------------------------------------"
+    echo " |      \|        \                     _/  \  |         \ "
+    echo " \$$$$$$ \$$$$$$$$                    |   $$   \$$$$$$$$ "
+    echo "  | $$     | $$          ______        \$$$$      /  $$ "
+    echo "  | $$     | $$         |      \        | $$     /  $$ "
+    echo "  | $$     | $$          \$$$$$$        | $$    /  $$ "
+    echo " _| $$_    | $$                        _| $$_  /  $$"
+    echo "|   $$ \   | $$                       |   $$ \|  $$"
+    echo " \$$$$$$    \$$                        \$$$$$$| \$$"
+    echo "-----------------------------------------------------------------"
+    echo "Cara penggunaan : ./pokemon_analysis.sh <namafile> [opsi]"
+    echo "opsi:"
+    echo "   -h, --help              Menampilkan display ini"
+    echo "   -i, --info              Menampilkan pokemon dengan Usage dan RawUsage tertinggi"
+    echo "   -s, --sort <metode>     Menyortir data sesuai metode nya"
+    echo "                           Metode = Pokemon, Usage%, RawUsage, HP, Atk, Def, SpAtk, SpDef, Speed"
+    echo "   -g, --grep <nama>       Menampilkan info nama pokemon"
+    echo "   -f, --filter <tipe>     Menampilkan pokemon yang memiliki tipe tertentu"
+
+case "$COMMAND" in
+    -h|--help) bantuan_menu;;
+    -i|--info) summary ;;
+    -s|--sort) mengurutkan_data ;;
+    -g|--grep) cari_pokemon ;;
+    -f|--filter)filter_type ;;
+    *)
+
+esac
+}
+``` 
+Keterangan :
+Menjelaskan cara menggunakan script bernama pokemon_analysis.sh.
+Menjelaskan semua opsi perintah yang bisa dipakai user:
+
+-h / --help: Memanggil fungsi bantuan (tampilan ini sendiri).
+-i / --info: Menampilkan Pokémon dengan Usage tertinggi (fungsi summary).
+-s / --sort <metode>: Menyortir data (fungsi mengurutkan_data).
+-g / --grep <nama>: Mencari Pokémon berdasarkan nama (fungsi cari_pokemon).
+-f / --filter <tipe>: Filter Pokémon berdasarkan tipe (fungsi filter_type).
 
 
 
