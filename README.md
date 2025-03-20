@@ -1303,7 +1303,7 @@ Ini buktinya guys!!!
 ![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003624.png)
 
 ## Output Bonus (Eclipse):
-![iamge alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003703.png)
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003703.png)
 
 
 # REVISI Soal 3
@@ -1516,8 +1516,16 @@ Perubahan dan penjelasan:
 - `sed "s/.*, *\([0-9.]*\)%* id.*/\1/"` : perintah (stream editor) untuk memanipulasi teks yang akan mencocokkan semua karakter `.*` hingga `,` dan spasi `*`. `\([0-9.]*\)` Mengekstrak angka yang berada setelah koma dan spasi. `\(...\)` Menangkap nilai ini sebagai grup. `%* id.*` Mencocokkan teks `% id` (persentase idle) dan semua karakter setelahnya `.*`. `\1` Menggantikan seluruh baris dengan nilai yang ditangkap oleh grup pertama `\([0-9.]*\)`, persentase CPU yang idle(saat ini). 
 -`awk '{print 100 - $1"%"}'` : Mengambil kolom pertama dari input persentase CPU idle. lalu menghitung persentase CPU yang digunakan `100- $1`. dan `%` menambahkan simbol persen (%) ke hasil perhitungan.
 
-### Dokumentasi setelah Revisi:
+## Dokumentasi Output setelah Revisi:
 
+1. Speak to Me:
+[!image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/bc49f7567e85d04edb00c237eb7d6ab64cb5d7d6/assets/Screenshot%202025-03-20%20205741.png)
+
+2. On the Run:
+[!image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/bc49f7567e85d04edb00c237eb7d6ab64cb5d7d6/assets/Screenshot%202025-03-20%20205815.png)
+
+3. Brain Damage:
+[!image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/bc49f7567e85d04edb00c237eb7d6ab64cb5d7d6/assets/Screenshot%202025-03-20%20205500.png)
 
 # Soal 4
 _**Oleh : Balqis Sani Sabillah**_
