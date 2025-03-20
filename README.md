@@ -1305,6 +1305,220 @@ Ini buktinya guys!!!
 ## Output Bonus (Eclipse):
 ![iamge alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/b9294b5df84c6447f990d13fbea72d71e3f06ea4/assets/Screenshot%202025-03-18%20003703.png)
 
+
+# REVISI Soal 3
+
+## Bagian yang di revisi
+
+### A. Speak to Me
+
+**Before revisi:**
+```bash
+affirmations=(
+    "$name adalah TOP LEADER!!."
+    "ORA UMUM!!."
+    "kamu adalah lebih dari apa yang kamu bayangkan!!."
+    "just do it $name!!."
+    "aku sayang kamu, $name."
+    "$name look lonely, i can fix that."
+    "jangan lupa makan ya $name."
+    "semua ada progressnya."
+    "GOOD JOB!!!."
+    "IM A LION PIECE OF KITTEN."
+    "YESSS KINGGG!!! $name ARE THE KING!!."
+    "Kegagalan adalah keberhasilan yang tertunda kata mamah."
+    "Kata ilham tirai no 2."
+    "Jangan biarkan diri anda dibimbing oleh perasaan nafsu atau cinta."
+    "Pikirkan diri anda dengan enteng dan pikirkan dunia secara mendalam."
+    "Thou Art I, And I am Thou."
+    "Setiap hari terbaik ada di Junes!"
+    "walaupun tidak ada yang mencintai $name, masih ada aku di sisimu <3 ."
+    "janganlah menjadi ambatukam, tapi jadilah hambatuhan."
+    "dari maghrib kita bisa melihat bahwa di setiap kegelapan, pasti ada senja yang menyinari keindahan."
+    "mulut bergetar jantung berdebar kukira jatuh cinta, ternyata lapar."
+    "kita bisa memilihnya, tapi biarkan dia memilih pilihannya sendiri."
+    "hey $name janganlah sedih, ingat masih banyak episode yang blm kamu lalui!."
+    "jangan biarkan sisi badutmu menguasaimu, $name ."
+    "capek aku wak, biarkan aku istirahat pls!!."
+    "bang udah bang :< ."
+    "kucing itu imut tapi lebih imut $name ."
+    "Terkadang jawaban dari apa yang $name cari, ada di Tahu Sumedang."
+    "Semoga affirmasiku ini membantu $name menjalani hari."
+    "Sekasar-kasarnya yes king, tetapi ia memiliki cinta dan cahaya dalam hatinya."
+    "Terbentur, Terbentur, Terbentuk."
+    "Hidup dapat memberikan segala pada barang siapa tahu dan pandai menerima."
+    "God bless this opportunity for me to find a voice for some words that have waited for way too long."
+    "Imagination brings bliss at no cost, when I blink blink I receive at no loss."
+    "Carpediem - The enjoyment of the pleasure of the moment without concern for the future."
+    "Bor mu lah yang akan menembus surga!"
+)
+```
+Penjelasan: di soal nomor 1. diharuskan praktikan untuk membuat fungsi `speak to me()` menggunakan link API dari (https://github.com/annthurium/affirmations). Sehingga skrip ini tidak diperbolehkan menggunakan array.
+
+
+**After Revisi:**
+```bash
+speak_to_me(){
+    while true; do
+        # Ambil kata-kata motivasi dari API, ekstrak menggunakan regex
+        affirmation=$(curl -s -H "Accept: application/json" "https://www.affirmations.dev" | sed -E 's/.*"affirmation":"([^"]*)".*/\1/')
+        
+        # Munculkan kata-kata kak gem
+        echo -n "Kata kak gem: "
+
+        # Tampilkan kata per kata dengan efek seperti mengetik
+        for word in $affirmation; do
+            echo -n "$word " # Print kata per kata
+            sleep 0.1
+        done
+
+        # Jeda antar kalimat
+        echo ""
+        sleep 1
+    done
+}
+```
+Perubahan serta penjelasan: ini adalah hasil revisi untuk fungsi speak_to_me menggunakan link API, yang diubah disini adalah
+- `tidak ada kata afirmasi dengan $name dikarenakan kata afirmasi dari link github`
+- `ada efek ketikan selama 0.1 detik`
+
+Lalu untuk kode setelah direvisi ada dibagian:
+
+`affirmation=$(curl -s -H "Accept: application/json" "https://www.affirmations.dev" | sed -E 's/.*"affirmation":"([^"]*)".*/\1/')`
+
+Penjelasan:
+- `curl -s -H "Accept: application/json" "https://www.affirmations.dev"` : mengambil data JSON dari API `affirmations.dev` secara diam-diam `-s`.
+- `sed -E 's/.*"affirmation":"([^"]*)".*/\1/'` : menggunakan `sed` untuk mengekstrak teks yang ada di dalam kunci `"affirmation"` dari JSON. Ini menggunakan regex (regular expression).
+- fungsi setelah direvisi tidak menghilangkan fitur `Kata kak gem: ` lalu `$affirmation`
+- `for word in $affirmation; do` : loop melalui setiap kata dalam variabel `$affirmation`. `echo -n "$word "` : Menampilkan setiap kata dengan jeda 0.1 detik, seperti efek ketik. `sleep 0.1` : Memberi jeda 0.1 detik antara setiap kata.
+
+### B. On the Run
+
+**Before revisi:**
+```bash
+on_the_run() {
+    total_steps=100
+    echo "READY, SET, GO!"
+    echo
+for ((i=0; i<=total_steps; i++)); do
+    sleep_interval=$(awk -v min=0.1 -v max=1 'BEGIN{srand(); print min+rand()*(max-min)}')
+    sleep "$sleep_interval"
+    percent=$((i * 100 / total_steps))
+    filled=$(printf "%${i}s" | tr ' ' '=')
+    empty=$(printf "%$((total_steps - i))s")
+    printf "\r[%-${total_steps}s] %d%%" "$filled$empty" "$percent"
+case $percent in
+    20) echo -e "\nCmon, this is the start of the journey!" ;;
+    40) echo -e "\nAlmost halfway through!!" ;;
+    50) echo -e "\nYES YOU MADE IT HALF, 50% MORE!!" ;;
+    70) echo -e "\nALMOST there!!! keep up champ!" ;;
+    80) echo -e "\nKEEP UP!! GO!! GO!! GO!!" ;;
+    100) echo -e "\nANDDD...YOU DID IT CHAMP!!! YOU BECOME A RUNNER!" ;;
+esac
+```
+Penjelasan: untuk fungsi ini, ukuran dari progress bar mengikuti lebar dari terminal. sehingga `total_steps=100` itu salah.
+
+**After revisi:**
+```bash
+on_the_run() {
+    local width=$(tput cols)  #total langkah dari lebar terminal
+    local bar_width=$((width - 20))  #lebar bar
+    local progress=0  #inisialisasi progress
+    local max=100
+
+    echo -n "READY, SET, GO!"
+    sleep 1
+    echo ""
+
+    while [ $progress -lt $max ]; do
+    local filled=$((progress * bar_width / $max))
+    local empty=$((bar_width - filled)) 
+    printf "\r[%-${bar_width}s] %d%%" "$(printf '#%.0s' $(seq 1 $filled))" "$progress" 
+ 
+sleep $(awk -v min=0.1 -v max=1 'BEGIN {srand(); print min+rand()*(max-min)}')  #random sleep antara 0.1 - 1 detik
+
+progress=$((progress + (RANDOM % 5 + 1)))
+
+    if [ $progress -ge $max ]; then
+    progress=$max
+    break 
+    fi
+done
+
+printf "\r[%-${bar_width}s] 100%%" "$(printf '#%.0s' $(seq 1 $bar_width))"
+echo -e "\nANDDD....YOU DID IT CHAMP!!! YOU BECOME A RUNNER!"
+echo -e "\nDone!"
+}
+```
+Perubahan beserta penjelasan:
+- untuk lebar dari progress bar dideklarasikan sebagai `$(tput cols)`. yang dimana ini akan mengikuti lebar/columns dari terminal.
+- `local bar_width=$((width - 20))` : Menghitung lebar bar dengan mengurangi 20 dari lebar terminal.
+- `local progress=0` : Inisialisasi variabel progress untuk melacak kemajuan.
+- `local max=100`: menetapkan nilai maksimum progress ke 100.
+
+
+Lalu untuk skrip ini:
+```bash
+while [ $progress -lt $max ]; do
+        local filled=$((progress * bar_width / $max))
+        local empty=$((bar_width - filled)) 
+        printf "\r[%-${bar_width}s] %d%%" "$(printf '#%.0s' $(seq 1 $filled))" "$progress" 
+```
+Penjelasan: 
+- `while [ $progress -lt $max ]; do` : Loop sampai progress mencapai 100
+- `local filled=$((progress * bar_width / $max))` : Menghitung panjang bar yang terisi
+- `local empty=$((bar_width - filled))` : Menghitung panjang bar yang kosong
+- `printf "\r[%-${bar_width}s] %d%%" "$(printf '#%.0s' $(seq 1 $filled))" "$progress"` : Menampilkan bar progress.
+
+```bash
+progress=$((progress + (RANDOM % 5 + 1)))
+
+        if [ $progress -ge $max ]; then
+            progress=$max
+            break 
+        fi
+    done
+
+    printf "\r[%-${bar_width}s] 100%%" "$(printf '#%.0s' $(seq 1 $bar_width))"
+    echo -e "\nANDDD....YOU DID IT CHAMP!!! YOU BECOME A RUNNER!"
+    echo -e "\nDone!"
+}
+```
+Penjelasan:
+- `sleep $(awk -v min=0.1 -v max=1 'BEGIN {srand(); print min+rand()*(max-min)}')` : Memberi jeda acak antara 0.1 sampai 1 detik.
+- `progress=$((progress + (RANDOM % 5 + 1)))` : Menambah progress secara random(acak) antara 1 hingga 5
+- `printf "\r[%-${bar_width}s] 100%%" "$(printf '#%.0s' $(seq 1 $bar_width))"` : Menampilkan bar progress penuh.
+- `echo -e "\nANDDD....YOU DID IT CHAMP!!! YOU BECOME A RUNNER!"`: Menampilkan pesan setelah 100% atau **SELESAI!!**
+
+### C. Brain Damage
+
+**Before Revisi:**
+```bash
+waktu_ini=$(date +"%T")
+        memory_info=$(free -m | awk 'NR==2 {printf "Memory used: %s/%s MB (%.2f%%)", $3, $2, ($3/$2)*100}')
+        open_files=$(lsof | wc -l)
+        bg_process=$(ps -e -o stat= | grep -c 'S')
+```
+Fungsi ini mengharuskan kita untuk menampilkan fitur informasi CPU saat ini. Skrip diatas merupakan bagian dari code yang sebelum direvisi untuk menampilkan fitur tersebut. Masih menampilkan waktu sekarang, info memori, info open file, dan proses latar belakang.
+
+**Setelah Revisi:**
+```bash
+waktu_ini=$(date +"%T")
+        memory_info=$(free -m | awk 'NR==2 {printf "Memory used: %s/%s MB (%.2f%%)", $3, $2, ($3/$2)*100}')
+        open_files=$(lsof | wc -l)
+        bg_process=$(ps -e -o stat= | grep -c 'S')
+        cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')
+```
+Perubahan dan penjelasan:
+- Penambahan skrip `cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')` : untuk mengambil informasi penggunaan CPU
+- `top -bn1`: perintah mengambil informasi tentang proses CPU yang berjalan dalam mode "batch" dan hanya menampilkan `-n1` 1 iterasi lalu keluar.
+- `grep "Cpu(s)` : menyaring output dari `top` untuk **hanya** mengambil baris teks yang mengandung `Cpu(s)`
+- `sed "s/.*, *\([0-9.]*\)%* id.*/\1/"` : perintah (stream editor) untuk memanipulasi teks yang akan mencocokkan semua karakter `.*` hingga `,` dan spasi `*`. `\([0-9.]*\)` Mengekstrak angka yang berada setelah koma dan spasi. `\(...\)` Menangkap nilai ini sebagai grup. `%* id.*` Mencocokkan teks `% id` (persentase idle) dan semua karakter setelahnya `.*`. `\1` Menggantikan seluruh baris dengan nilai yang ditangkap oleh grup pertama `\([0-9.]*\)`, persentase CPU yang idle(saat ini). 
+-`awk '{print 100 - $1"%"}'` : Mengambil kolom pertama dari input persentase CPU idle. lalu menghitung persentase CPU yang digunakan `100- $1`. dan `%` menambahkan simbol persen (%) ke hasil perhitungan.
+
+### Dokumentasi setelah Revisi:
+
+
 # Soal 4
 _**Oleh : Balqis Sani Sabillah**_
 
