@@ -1588,7 +1588,7 @@ Keterangan :
 
 # Revisi no.4 
 
-## B. Sorting Data
+## B. Sorting Data (Bukan rekomendasi dari assist)
 
 - Sebelum
 ```bash 
