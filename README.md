@@ -1586,184 +1586,186 @@ Keterangan :
 - `{print "Highest Adjusted Usage: "$1","$2}` : Cetak nama Pokémon `$1` dan Usage% `$2`
 - `{print "Highest Raw Usage:      "$1","$3}` : Cetak nama Pokémon `$1` dan RawUsage% `$3`
 
-### B. Mengurutkan Pokemon berdasarkan data kolom
-> Untuk memastikan bahwa anda mengetahui kondisi lingkungan “Generation 9 OverUsed”, anda berusaha untuk membuat sebuah fitur untuk sort berdasarkan:
-Usage%
-RawUsage
-Nama
-HP
-Atk
-Def
-Sp.Atk
-Sp.Def
-Speed
-Sort dilakukan dengan urutan descending untuk semua angka selain nama, yang diurutkan secara alphabetical. Output harus sesuai dengan format csv yang diberikan.
+# Revisi no.4 
 
-Contoh (atur pesan sesuai kreativitas):
-```bash
-./pokemon_analysis.sh pokemon_usage.csv --sort usage
-Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
-<namaPokemon>,31.09270%,253499,Ground,Flying,75,95,125,45,75,95
-<namaPokemon>,27.06328%,563831,Ground,Fighting,115,131,131,53,53,87
-<namaPokemon>,22.41954%,224818,Flying,Steel,98,87,105,53,85,67
-<namaPokemon>,21.52833%,192107,Dark,Ground,155,110,125,55,80,45
-<namaPokemon>,21.27718%,412146,Dark,Steel,100,135,120,60,85,50
-... dan seterusnya (195 more lines)
+## B. Sorting Data
 
-
+- Sebelum
+```bash 
+if [ "$OPTION" = "pokemon" ]; then
+    tail -n +2 "$FILE" | sort -t, -k1,1
+else
+    tail -n +2 "$FILE" | sort -t, -k$(awk -F, -v col="$OPTION" '{for (i=1; i<=NF; i++) if ($i == col) print i}' <<< "$HEADER") -nr
+fi
 ```
-### Penyelesaian B
-Kita diminta untuk mengurutkan masing - masing kolom dari kolom pokemon sampai speed 
+Masalah : kadang error kadang ngga
 
+- Sesudah
 ```bash
-function mengurutkan_data {
-        HEADER=$(head -1 "$FILE")
-        echo "$HEADER"
-        if [ "$OPTION" = "pokemon" ]; then
-            tail -n +2 "$FILE" | sort -t, -k1,1
-        else
-            tail -n +2 "$FILE" | sort -t, -k$(awk -F, -v col="$OPTION" '{for (i=1; i<=NF; i++) if ($i == col) print i}' <<< "$HEADER") -nr
-   fi
-        exit 0
-}
+declare -A kolom
+kolom=( [name]=1 [usage]=2 [raw]=3 [hp]=6 [atk]=7 [def]=8 [spatk]=9 [spdef]=10 [speed]=11 )
+
+metode_lc=$(echo "$OPTION" | tr '[:upper:]' '[:lower:]')
+kolom_index=${kolom[$metode_lc]}
+
+if [ "$metode_lc" = "name" ]; then
+    tail -n +2 "$FILE" | sort -t, -k$kolom_index,$kolom_index
+else
+    tail -n +2 "$FILE" | sort -t, -k$kolom_index,$kolom_index -nr
+fi
 ```
 Keterangan :
-- `HEADER=$(head -1 "$FILE")` : Mengambil baris pertama dari file lalu menyimpan nya ke variabel HEADER
--  `echo "$HEADER"` : Menampilkan output ke layar berupa HEADER yg tadi sudah disimpan
--  ` if [ "$OPTION" = "pokemon" ]; then` : Mengecek apakah opsi ($OPTION) yang diberikan adalah "pokemon" lalu jika benar, maka data akan diurutkan di kolom Pokémon (kolom pertama)
--  `tail -n +2 "$FILE" ` : Mengeksekusi file dari baris ke 2
--  `sort -t, -k1,1` : Sortir berdasarkan kolom pertama (nama Pokémon) dalam urutan alfabetis
--  `-k$(awk -F, -v col="$OPTION" '{for (i=1; i<=NF; i++) if ($i == col) print i}' <<< "$HEADER") -nr` : Variabel col diisi dengan nama kolom yang dipilih lalu Looping dari kolom pertama (i=1) hingga terakhir (NF), 
-Jika nama kolom $i cocok dengan $OPTION, cetak nomor kolom tersebut.
 
-### C. Mencari nama Pokemon tertentu
-> Setelah mengetahui kondisi lingkungan “Generation 9 OverUsed”, anda ingin mencari tahu statistik penggunaan dari beberapa Pokemon yang mungkin dapat bertanding baik melawan sebagian besar Pokemon yang ada di Top 10 usage. Oleh karena itu, anda membuat fitur search berdasarkan nama Pokemon. Pastikan agar search yang dimasukkan tidak memunculkan hasil yang tidak diinginkan (seperti memunculkan semua Grass type ketika mengetik search “Grass”), dan output harus sesuai dengan format csv yang diberikan dengan sort Usage%.
+- `declare -A kolom`
+Membuat associative array (kolom) yang pakai nama kolom sebagai key, angka kolom sebagai value.
 
-contoh : 
-```bash
-./pokemon_analysis.sh pokemon_usage.csv --grep rotom
-Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
-Rotom-Wash,1.62637%,71243,Electric,Water,50,65,107,105,107,86
+- `kolom=([name]=1 [usage]=2 ... [speed]=11)`
+Isi array kolom dengan mapping nama kolom ke nomor kolom di CSV.
 
-```
-### Penyelesaian C
+- `metode_lc=$(echo "$OPTION" | tr '[:upper:]' '[:lower:]')`
+Ubah nilai $OPTION jadi huruf kecil semua (biar gak case-sensitive).
+
+- `kolom_index=${kolom[$metode_lc]}`
+Ambil angka kolom dari array berdasarkan $OPTION (yang sudah di-lowercase).
+
+- `tail -n +2 "$FILE"`
+Buang baris pertama file (biasanya header CSV), ambil mulai baris kedua.
+
+- `sort -t, -k$kolom_index,$kolom_index`
+Urutkan berdasarkan kolom ke-kolom_index, delimiter-nya koma (,).
+
+- `-nr (opsi di sort)`
+-n: sort numerik, -r: reverse (descending).
+Jadi -nr: urut angka dari besar ke kecil.
+
+## C. Grep Nama Pokémon
+
+sebelum
+
 ``` bash
-function cari_pokemon() {
-
- [ -z "$OPTION" ] && { echo "Error: Nama Pokémon harus diberikan!"; exit 1; }
-
-    head -1 "$FILE"
-    tail -n +2 "$FILE" | grep -i "$OPTION"
-
-    exit 0
-}
+grep -i "^$OPTION," "$FILE"
 ```
+Masalah:
+- Hanya cocokkan nama diawal (^$OPTION,), tidak fleksibel dan tidak urut berdasarkan usage.
+- search nama pokemon hanya membaca dari nama pokemon, jangan sampai muncul dari type.
+
+
+sesudah
+``` bash
+tail -n +2 "$FILE" | awk -F',' -v name="$OPTION" '
+    tolower($1) ~ tolower(name)
+' | sort -t',' -k2,2 -nr
+```
+
 Keterangan : 
 
--  `[ -z "$OPTION" ]` : Mengecek apakah option yg diisi kosong apa tidak 
-- ` { echo "Error: Nama Pokémon harus diberikan!"; exit 1; }` : Jika benar maka akan keluar output " Nama Pokémon harus diberikan! "
-- ` head -1 "$FILE" ` : Menampilkan baris pertama dari FILE
-- ` tail -n +2 "$FILE" ` : Menampilkan isi file dari baris kedua
-- ` grep -i "$OPTION" ` : Mencari baris sesuai perintah di OPTION ( -i = agar tidak terpengaruh dengan huruf besar dan kecil )
+- `tail -n +2 "$FILE"` = Skip baris pertama (header CSV), ambil baris ke-2 dan seterusnya.
 
-### D. Mencari Pokemon berdasarkan filter nama type
-> Agar dapat membuat tim yang baik, anda perlu memikirkan kombinasi yang baik dari beberapa Pokemon, hal ini disebut sebagai “core” oleh komunitas Pokemon! Oleh karena itu, anda berpikiran untuk membuat fitur filter berdasarkan Type sebuah Pokemon. Output harus sesuai dengan format csv yang diberikan dengan sort Usage%
+- `awk -F',' -v name="$OPTION" '...'` = awk untuk baca CSV dengan delimiter koma (-F',').Variabel name di-assign dari shell variabel $OPTION.
 
-contoh 
+- `tolower($1) ~ tolower(name)` = Bandingkan kolom pertama ($1, biasanya nama) dengan variabel name, dua-duanya diubah jadi huruf kecil.
+
+- `sort -t',' -k2,2 -nr` = Setelah filter pakai awk, hasilnya diurutkan: Berdasarkan kolom ke-2 Numerik (-n) dan reverse (-r) → jadi urut dari besar ke kecil.
+
+## D. Filter Berdasarkan Type
+
+sebelum 
 ``` bash 
-./pokemon_analysis.sh pokemon_usage.csv --filter dark
-Pokemon,Usage%,RawUsage,Type1,Type2,HP,Atk,Def,SpAtk,SpDef,Speed
-Ting-Lu,21.52833%,192107,Dark,Ground,155,110,125,55,80,45
-Kingambit,21.27718%,412146,Dark,Steel,100,135,120,60,85,50
-Roaring Moon,12.32447%,230323,Dragon,Dark,105,139,71,55,101,119
-Samurott-Hisui,10.89438%,214350,Water,Dark,90,108,80,100,65,85
-Darkrai,10.40132%,170900,Dark,None,70,90,90,135,90,125
-Weavile,7.75603%,79409,Dark,Ice,70,120,65,45,85,125
-... dan seterusnya (20 more lines)
+tail -n +2 "$FILE" | grep -i "$OPTION" | sort -t, -k2 -nr
 ```
+Masalah: Bisa salah baca nama Pokémon yang mengandung nama type (misal "Grassmon").
 
-### Penyelesian D 
-``` bash
+sesudah
+```bash
+awk -F',' -v tipe="$OPTION" 'NR==1 || tolower($4) == tolower(tipe) || tolower($5) == tolower(tipe)' "$FILE"
+``` 
+Keterangan :
+
+- `awk -F','` = Menentukan delimiter CSV adalah koma (','), jadi kolom dipisah pakai koma.
+
+- `-v tipe="$OPTION"` = variabel tipe di dalam awk, nilainya diambil dari shell variabel $OPTION.
+
+- `'NR==1 || tolower($4) == tolower(tipe) || tolower($5) == tolower(tipe)'` = 
+NR==1: Cetak baris pertama (header CSV), supaya header tetap muncul di output.
+tolower($4) == tolower(tipe): Cetak baris jika kolom ke-4 sama (case-insensitive) dengan tipe.
+tolower($5) == tolower(tipe): Atau, kolom ke-5 cocok juga.
+
+- "FILE"` = File yang di eksekusi
+
+## E.Error handling
+Sebelum 
+```bash
+#Fitur Filter Pokémon berdasarkan Type
 function filter_type() {
     HEADER=$(head -1 "$FILE")
     echo "$HEADER"
     tail -n +2 "$FILE" | grep -i "$OPTION" | sort -t, -k2 -nr
 }
 ```
-Keterangan : 
+Masalah : Nggak ada cek $OPTION kosong, Kalau jalankan -f tanpa tipe ➜ grep -i "" ➜ semua data muncul.
 
-- ` HEADER=$(head -1 "$FILE") ` : Mengambil baris pertama dari file lalu menyimpan nya ke variabel HEADER
-- `  echo "$HEADER" ` : Menampilkan output ke layar berupa HEADER yg tadi sudah disimpan
-- `  tail -n +2 "$FILE" ` : Menampilkan isi file dari baris kedua
-- ` grep -i "$OPTION" ` : Mencari baris sesuai perintah di OPTION ( -i = agar tidak terpengaruh dengan huruf besar dan kecil )
-- ` sort -t, -k2 -nr ` : -t pemisah kolom (koma), -k2 mengurutkan kolom ke - 2, -n Urutan numerik (karena angka), -r Urutan terbalik (dari besar ke kecil )
+Sesudah
 
-### E. Error handling
-Pastikan program yang anda buat mengecek semua kesalahan pengguna agar dapat memberikan kejelasan kepada pengguna pada setiap kasus.
-
-contoh : 
-``` bash
-./pokemon_analysis.sh pokemon_usage.csv --filter
-Error: no filter option provided
-Use -h or --help for more information
-```
-### Penyelesaian 
-``` bash
- echo "Error: Perintah '$COMMAND' tidak dikenali!"
-        echo "gunakan -h or --help untuk info lebih lanjut"
+```bash
+function filter_tipe() {
+    if [ -z "$OPTION" ]; then
+        echo "Error: Tipe tidak diberikan."
         exit 1
-        ;;
-```
-Keterangan :
-- `  echo "Error: Perintah '$COMMAND' tidak dikenali!" ` : Memberitahu bahwa nilai dari variabel COMMAND tidak tikenali sebagai perintah valid
-- `   echo "gunakan -h or --help untuk info lebih lanjut" ` : Memberikan petunjuk untuk menggunakan -h atau --help untuk info lebih lanjut
-
-### F. Help screen yang menarik
-``` bash
-function bantuan_menu() {
-    echo "-----------------------------------------------------------------"
-    echo " |      \|        \                     _/  \  |         \ "
-    echo " \$$$$$$ \$$$$$$$$                    |   $$   \$$$$$$$$ "
-    echo "  | $$     | $$          ______        \$$$$      /  $$ "
-    echo "  | $$     | $$         |      \        | $$     /  $$ "
-    echo "  | $$     | $$          \$$$$$$        | $$    /  $$ "
-    echo " _| $$_    | $$                        _| $$_  /  $$"
-    echo "|   $$ \   | $$                       |   $$ \|  $$"
-    echo " \$$$$$$    \$$                        \$$$$$$| \$$"
-    echo "-----------------------------------------------------------------"
-    echo "Cara penggunaan : ./pokemon_analysis.sh <namafile> [opsi]"
-    echo "opsi:"
-    echo "   -h, --help              Menampilkan display ini"
-    echo "   -i, --info              Menampilkan pokemon dengan Usage dan RawUsage tertinggi"
-    echo "   -s, --sort <metode>     Menyortir data sesuai metode nya"
-    echo "                           Metode = Pokemon, Usage%, RawUsage, HP, Atk, Def, SpAtk, SpDef, Speed"
-    echo "   -g, --grep <nama>       Menampilkan info nama pokemon"
-    echo "   -f, --filter <tipe>     Menampilkan pokemon yang memiliki tipe tertentu"
-
-case "$COMMAND" in
-    -h|--help) bantuan_menu;;
-    -i|--info) summary ;;
-    -s|--sort) mengurutkan_data ;;
-    -g|--grep) cari_pokemon ;;
-    -f|--filter)filter_type ;;
-    *)
-
-esac
+    fi
+    awk -F',' -v tipe="$OPTION" 'NR==1 || tolower($4) == tolower(tipe) || tolower($5) == tolower(tipe)' "$FILE"
+    exit 0
 }
-``` 
-Keterangan :
-- Menjelaskan cara menggunakan script bernama pokemon_analysis.sh.
-- Menjelaskan semua opsi perintah yang bisa dipakai user:
+```
+Keterangan : 
+- Cek dulu apakah $OPTION kosong.
+- Kalau kosong ➜ error ➜ stop script.
+- Data hanya ditampilkan jika tipe diberikan.
 
-- -h / --help: Memanggil fungsi bantuan (tampilan ini sendiri).
-- -i / --info: Menampilkan Pokémon dengan Usage tertinggi (fungsi summary).
-- -s / --sort <metode>: Menyortir data (fungsi mengurutkan_data).
-- -g / --grep <nama>: Mencari Pokémon berdasarkan nama (fungsi cari_pokemon).
-- -f / --filter <tipe>: Filter Pokémon berdasarkan tipe (fungsi filter_type).
+## F. Help screen yang menarik (bukan rekomendasi dari assist) 
 
-
-
-
+output nya berantakan 
+``` output
+-----------------------------------------------------------------
+ |      \|        \                     _/  \  |         \
+ $1542815428$ $154281542815428$                    |   15428   $154281542815428$
+  | 15428     | 15428          ______        $15428$      /  15428
+  | 15428     | 15428         |      \        | 15428     /  15428
+  | 15428     | 15428          $1542815428$        | 15428    /  15428
+ _| 15428_    | 15428                        _| 15428_  /  15428
+|   15428 \   | 15428                       |   15428 \|  15428
+ $1542815428$    $$                        $1542815428$| $$
+-----------------------------------------------------------------
+Cara penggunaan : ./pokemon_analysis.sh <namafile> [opsi]
+opsi:
+   -h, --help              Menampilkan display ini
+   -i, --info              Menampilkan pokemon dengan Usage dan RawUsage tertinggi
+   -s, --sort <metode>     Menyortir data sesuai metode nya
+                           Metode = Pokemon, Usage%, RawUsage, HP, Atk, Def, SpAtk, SpDef, Speed
+   -g, --grep <nama>       Menampilkan info nama pokemon
+   -f, --filter <tipe>     Menampilkan pokemon yang memiliki tipe tertentu
+```
+sesudah
+```output
+============================================================================================================================
+ _|_|_|   _|_|_|_|_|                          _|   _|_|_|_|_|         _|_|_|     _|_|       _|_|_|     _|_|     _|_|_|
+   _|         _|                            _|_|           _|       _|         _|    _|   _|         _|    _|   _|    _|
+   _|         _|           _|_|_|_|_|         _|         _|         _|  _|_|   _|_|_|_|   _|         _|    _|   _|_|_|
+   _|         _|                              _|       _|           _|    _|   _|    _|   _|         _|    _|   _|    _|
+ _|_|_|       _|                              _|     _|               _|_|_|   _|    _|     _|_|_|     _|_|     _|    _|
+============================================================================================================================
+    ▌-----------------------------------------------------▐
+    ▌ Cara penggunaan: ./pokemon_analysis.sh <file> <opsi>▐
+    ▌ Opsi:                                               ▐
+    ▌   -h, --help            Tampilkan bantuan           ▐
+    ▌   -i, --info            Tampilkan Usage tertinggi   ▐
+    ▌   -s, --sort <metode>   Urutkan data descending     ▐
+    ▌       Metode: name, usage, raw, hp, atk, def,       ▐
+    ▌               spatk, spdef, speed                   ▐
+    ▌   -g, --grep <nama>     Tampilkan data by nama      ▐
+    ▌   -f, --filter <tipe>   Tampilkan by tipe Pokemon   ▐
+    ▌-----------------------------------------------------▐
+=================================================================
+```
 
 
 ## Kendala
