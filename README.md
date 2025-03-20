@@ -251,7 +251,7 @@ Constraint :
 ```
 
 ### Penyelesaian B
-Pertama saya akan menambahkan command untuk **validasi email dan password** agar sesuai dengan constraint nomor 1
+Pertama saya akan menambahkan command untuk **validasi email dan password** agar sesuai dengan constraint nomor
 
 `register.sh`
 ```bash
@@ -260,11 +260,7 @@ while true; do
     read -r email
 
     if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
-        if grep -q "^$email," "$file_player"; then
-            echo "This email is already registered. Please use a different email. ❌"
-        else
-            break  
-        fi
+    # .... code bagian C ....
     else
         echo "Invalid email format. Please make sure the email contains '@' and '.'. ❌"
     fi
