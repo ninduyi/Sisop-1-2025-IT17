@@ -1519,13 +1519,13 @@ Perubahan dan penjelasan:
 ## Dokumentasi Output setelah Revisi:
 
 1. Speak to Me:
-[!image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/bc49f7567e85d04edb00c237eb7d6ab64cb5d7d6/assets/Screenshot%202025-03-20%20205741.png)
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/9450e532ca9a1a3210211cc33d77bc39b2cabd2e/assets/Screenshot%202025-03-20%20205741.png)
 
-2. On the Run:
-[!image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/bc49f7567e85d04edb00c237eb7d6ab64cb5d7d6/assets/Screenshot%202025-03-20%20205815.png)
+3. On the Run:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/9450e532ca9a1a3210211cc33d77bc39b2cabd2e/assets/Screenshot%202025-03-20%20205815.png)
 
-3. Brain Damage:
-[!image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/bc49f7567e85d04edb00c237eb7d6ab64cb5d7d6/assets/Screenshot%202025-03-20%20205500.png)
+5. Brain Damage:
+![image alt](https://github.com/ninduyi/Sisop-1-2025-IT17/blob/9450e532ca9a1a3210211cc33d77bc39b2cabd2e/assets/Screenshot%202025-03-20%20205500.png)
 
 # Soal 4
 _**Oleh : Balqis Sani Sabillah**_
