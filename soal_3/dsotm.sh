@@ -7,110 +7,53 @@ clear_terminal(){
 
 #fungsi speak to me
 speak_to_me(){
-    echo "Kimi no Nawa:" #suruh input nama
-    read -r name #ini namanya dibaca
-#array berisi kata-kata afirmasi nya kak gem
-affirmations=(
-    "$name adalah TOP LEADER!!."
-    "ORA UMUM!!."
-    "kamu adalah lebih dari apa yang kamu bayangkan!!."
-    "just do it $name!!."
-    "aku sayang kamu, $name."
-    "$name look lonely, i can fix that."
-    "jangan lupa makan ya $name."
-    "semua ada progressnya."
-    "GOOD JOB!!!."
-    "IM A LION PIECE OF KITTEN."
-    "YESSS KINGGG!!! $name ARE THE KING!!."
-    "Kegagalan adalah keberhasilan yang tertunda kata mamah."
-    "Kata ilham tirai no 2."
-    "Jangan biarkan diri anda dibimbing oleh perasaan nafsu atau cinta."
-    "Pikirkan diri anda dengan enteng dan pikirkan dunia secara mendalam."
-    "Thou Art I, And I am Thou."
-    "Setiap hari terbaik ada di Junes!"
-    "walaupun tidak ada yang mencintai $name, masih ada aku di sisimu <3 ."
-    "janganlah menjadi ambatukam, tapi jadilah hambatuhan."
-    "dari maghrib kita bisa melihat bahwa di setiap kegelapan, pasti ada senja yang menyinari keindahan."
-    "mulut bergetar jantung berdebar kukira jatuh cinta, ternyata lapar."
-    "kita bisa memilihnya, tapi biarkan dia memilih pilihannya sendiri."
-    "hey $name janganlah sedih, ingat masih banyak episode yang blm kamu lalui!."
-    "jangan biarkan sisi badutmu menguasaimu, $name ."
-    "capek aku wak, biarkan aku istirahat pls!!."
-    "bang udah bang :< ."
-    "kucing itu imut tapi lebih imut $name ."
-    "Terkadang jawaban dari apa yang $name cari, ada di Tahu Sumedang."
-    "Semoga affirmasiku ini membantu $name menjalani hari."
-    "Sekasar-kasarnya yes king, tetapi ia memiliki cinta dan cahaya dalam hatinya."
-    "Terbentur, Terbentur, Terbentuk."
-    "Hidup dapat memberikan segala pada barang siapa tahu dan pandai menerima."
-    "God bless this opportunity for me to find a voice for some words that have waited for way too long."
-    "Imagination brings bliss at no cost, when I blink blink I receive at no loss."
-    "Carpediem - The enjoyment of the pleasure of the moment without concern for the future."
-    "Bor mu lah yang akan menembus surga!"
-) # banyak banget kalimat inspiratifnya kak gem ini :)
+    while true; do
+    #ambil kata-kata motivasi dari API, ekstrak menggunakan regex 
+affirmation=$(curl -s -H "Accept: application/json" "https://www.affirmations.dev" | sed -E 's/.*"affirmation":"([^"]*)".*/\1/') 
+#memunculkan kata-kata kak gem
+echo -n "Kata kak gem: "
 
-while true; do #kalau udah bener? lakuin kata afirmasi:
+#menampilkan kata per kata dengan efek seperti mengetik
+for word in $affirmation; do
+echo -n "$word " #print kata per kata
+sleep 0.1
+done
 
-random_index=$((RANDOM % ${#affirmations[@]})) #ngepick kata random
-
-#ini biar kata afirmasi yg ada "$name" diganti ke nama user
-personalized_affirmation=$(echo "${affirmations[$random_index]}" | sed "s/\$name/$name/g")
-
-#biar elit
-echo -e "Kata Kak Gem: $personalized_affirmation"
-
-#kata per kata intervalnya 1 detik
+#jeda antar kalimat
+echo ""
 sleep 1
-
 done
 }
 
 #fungsi on the run
 on_the_run() {
-    total_steps=100  # Total langkah demi langkah
+    local width=$(tput cols)  #total langkah dari lebar terminal
+    local bar_width=$((width - 20))  #lebar bar
+    local progress=0  #inisialisasi progress
+    local max=100
 
-    #judul
-    echo "READY, SET, GO!"
-    echo
+    echo -n "READY, SET, GO!"
+    sleep 1
+    echo ""
 
-    for ((i=0; i<=total_steps; i++)); do
-        #bikin sleep e random, dari 0.1 sampe 1 detik. ya gitulah
-        sleep_interval=$(awk -v min=0.1 -v max=1 'BEGIN{srand(); print min+rand()*(max-min)}')
-        sleep "$sleep_interval"
+    while [ $progress -lt $max ]; do
+    local filled=$((progress * bar_width / $max))  #hitung panjang bar yang terisi
+    local empty=$((bar_width - filled))  #hitung panjang bar yang kosong
+    printf "\r[%-${bar_width}s] %d%%" "$(printf '#%.0s' $(seq 1 $filled))" "$progress"  #print bar
+ 
+sleep $(awk -v min=0.1 -v max=1 'BEGIN {srand(); print min+rand()*(max-min)}')  #random sleep antara 0.1 - 1 detik
 
-        #ngitung persentase
-        percent=$((i * 100 / total_steps))
+progress=$((progress + (RANDOM % 5 + 1)))
 
-        #progress barnya disini:
-        filled=$(printf "%${i}s" | tr ' ' '=')  #bagian ada isinya
-        empty=$(printf "%$((total_steps - i))s")  #bagian kosong
+    if [ $progress -ge $max ]; then
+    progress=$max
+    break 
+    fi
+done
 
-        #print progress bar
-        printf "\r[%-${total_steps}s] %d%%" "$filled$empty" "$percent"
-
-        #kata-kata motivasi di beberapa persentase biar sabi
-        case $percent in
-        20)
-        echo -e "\nCmon, this is the start of the journey!"
-        ;;
-        40)
-        echo -e "\nAlmost halfway through!!"
-        ;;
-        50)
-        echo -e "\nYES YOU MADE IT HALF, 50% MORE!!"
-        ;;
-        70)
-        echo -e "\nALMOST there!!! keep up champ!"
-        ;;
-        80)
-        echo -e "\nKEEP UP!! GO!! GO!! GO!!"
-        ;;
-        100)
-        echo -e "\nANDDD...YOU DID IT CHAMP!!! YOU BECOME A RUNNER!"
-        ;;
-        esac
-    done
-    echo  #biar gk ketumpuk, dibikin lagi ke bawah ya
+printf "\r[%-${bar_width}s] 100%%" "$(printf '#%.0s' $(seq 1 $bar_width))"
+echo -e "\nANDDD....YOU DID IT CHAMP!!! YOU BECOME A RUNNER!"
+echo -e "\nDone!"
 }
 
 #fungsi Time
@@ -259,11 +202,15 @@ echo -e "\e[0m"
     #jumlah proses yang berjalan dibelakang layar (bg)
     bg_process=$(ps -e -o stat= | grep -c 'S')
 
+    #ambil informasi penggunaan CPU
+    cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')
+
     #tampilkan informasi sistem
     echo -e "\e[1;34mTime Current: $waktu_ini\e[0m"
     echo -e "\e[1;34m$memory_info\e[0m"
     echo -e "\e[1;34mFile Opened: $open_files\e[0m"
     echo -e "\e[1;34mBackground Processes: $bg_process\e[0m"
+    echo -e "\e[1;34mCPU Usage: $cpu_usage\e[0m"
     echo
  
     #ambil data pake ps bukan playstation, yg dibawah ini bewarna
@@ -285,7 +232,7 @@ echo -e "\e[0m"
     cpu_color, $3, reset_color,
     mem_color, $4, reset_color,
     time_color, $10, reset_color,
-    $11
+    $11 #COMMAND
     }'
 
 echo -e "\n\e[1;33mMaafkan saya karena CPU%-nya malah kegeser, tapi berfungsilah ya ps auxnya :)\e[0m"
