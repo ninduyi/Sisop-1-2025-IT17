@@ -1770,4 +1770,9 @@ sesudah
 
 ## Kendala
 
+- Tampilan output art ascii nya berantakan padahal di bash nya dah rapi, akhirnya bikin ulang 
+- saat nge sort nama pokemon dan type awalnya kayak harus ngikutin nama di file nya 
+contoh = `iron` , kan di file nya gaada tuh yang `iron` doang adanya `Iron + something' I nya jg gede jadi awalnya dia gamau nge sort kalau ga sesuai nama di file nya. solusinya akhirnya disuruh kasih `metode_lc=$(echo "$OPTION" | tr '[:upper:]' '[:lower:]')` Tujuannya adalah agar pencocokan nilai $OPTION dengan key dari array kolom tidak sensitif terhadap huruf besar/kecil.
+
+
 ## Dokumentasi
