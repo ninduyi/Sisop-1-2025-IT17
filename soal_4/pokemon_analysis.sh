@@ -32,7 +32,7 @@ function bantuan_menu() {
     echo "    ▌   -h, --help            Tampilkan bantuan           ▐"
     echo "    ▌   -i, --info            Tampilkan Usage tertinggi   ▐"
     echo "    ▌   -s, --sort <metode>   Urutkan data descending     ▐"
-    echo "    ▌       Metode: name, usage, raw, hp, atk, def,       ▐"
+    echo "    ▌       Metode: pokemon, usage, raw, hp, atk, def,    ▐"
     echo "    ▌               spatk, spdef, speed                   ▐"
     echo "    ▌   -g, --grep <nama>     Tampilkan data by nama      ▐"
     echo "    ▌   -f, --filter <tipe>   Tampilkan by tipe Pokemon   ▐"
@@ -57,7 +57,7 @@ function sorting_data() {
     fi
 
     declare -A kolom
-    kolom=( [name]=1 [usage]=2 [raw]=3 [hp]=6 [atk]=7 [def]=8 [spatk]=9 [spdef]=10 [speed]=11 )
+    kolom=( [pokemon]=1 [usage]=2 [raw]=3 [hp]=6 [atk]=7 [def]=8 [spatk]=9 [spdef]=10 [speed]=11 )
 
     metode_lc=$(echo "$OPTION" | tr '[:upper:]' '[:lower:]')
     kolom_index=${kolom[$metode_lc]}

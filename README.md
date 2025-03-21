@@ -1549,7 +1549,7 @@ wget "https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGF
 ```
 Keterangan :
 - `wget` : Mengunduh file
-- `-O POKEMON_USAGE.CSV` : Menyimpan isi data set di link tersebut ke file bernama POKEMON_USAGE.CSV
+- `-O pokemon_usage.csv` : Menyimpan isi data set di link tersebut ke file bernama POKEMON_USAGE.CSV
 
 ## Jawaban
 
@@ -1776,3 +1776,56 @@ contoh = `iron` , kan di file nya gaada tuh yang `iron` doang adanya `'Iron + so
 
 
 ## Dokumentasi
+### A. Summary Data
+Menampilkan nama Pokemon dengan **Usage% dan RawUsage paling tinggi**
+![Summary Data](assets/summaryData.PNG)
+
+### B. Fitur untuk sort
+**`Sesudah revisi`**
+
+Sorting data by Pokemon name
+![Sorting by Pokemon Name](assets/sortbyPokemon.png)
+Sorting data by Usage
+![Sorting data by Usage](assets/sortbyUsageDescending.PNG)
+
+### C. Grep Nama Pokémon
+### Search pokemon dengan sort usage
+
+**`Sebelum revisi`**
+
+Search pokemon belum urut usage
+![sebelum rev C](assets/beforeusageC.png)
+**`Sesudah revisi`**
+
+Search pokemon sudah urut usage
+![Revisi C](assets/afterUsageC.png)
+
+### Search by Pokemon Name
+**`Sebelum revisi`**
+
+Searching pokemon masih by Type
+![Search pokemon by Type](assets/beforeSearchC.png)
+**`Sesudah revisi`**
+
+Searching pokemon sudah by pokemon name
+![Search pokemon by Name](assets/afterSearchC.png)
+
+### C. Search by Pokemon Type
+**`Sebelum revisi`**
+
+Searching pokemon pada kolom Pokemon masih ke search
+![Search by Name](assets/beforeSearchD.png)
+**`Sesudah revisi`**
+
+Sudah searching pokemon by type saja
+![Search pokemon by Type](assets/afterSearchD.png)
+
+### D. Error Handling
+**`Sebelum revisi`**
+
+Meski perintah tidak sesuai, output masih ada
+![Terminal Opsi 1](assets/beforeE.png)
+**`Sesudah revisi`**
+
+Output tidak ada ketika perintah tidak sesuai
+![Terminal Opsi 1](assets/afterE.png)
